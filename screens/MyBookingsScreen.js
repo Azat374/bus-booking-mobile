@@ -13,7 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { axiosInst } from "../service/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import Modal from "react-native-modal";
+import Icon from 'react-native-vector-icons/Feather';
 // Функция для форматирования времени (часы:минуты)
 const formatDateTime = (dateTimeString) => {
   const date = new Date(dateTimeString);
@@ -35,6 +36,8 @@ const formatDate = (dateString) => {
 
 const MyBookingsScreen = () => {
   const navigation = useNavigation();
+
+    const [menuVisible, setMenuVisible] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -124,8 +127,66 @@ const MyBookingsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+        <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 20,
+                marginBottom: 10,
+              }}>
+                <Text style={styles.title}>Мои бронирования</Text>
+                <TouchableOpacity onPress={() => setMenuVisible(true)}>
+                  <Icon name="menu" size={50} color="#6B21A8" />
+                </TouchableOpacity>
+              </View>
+        
+              <Modal
+                isVisible={menuVisible}
+                onBackdropPress={() => setMenuVisible(false)}
+                animationIn="slideInRight"
+                animationOut="slideOutRight"
+                backdropOpacity={0.3}
+                style={{ margin: 0, justifyContent: 'flex-start', alignItems: 'flex-end' }}
+              >
+                <View style={{
+                  width: 250,
+                  height: '100%',
+                  backgroundColor: '#fff',
+                  paddingTop: 60,
+                  paddingHorizontal: 20,
+                  borderTopLeftRadius: 20,
+                  borderBottomLeftRadius: 20,
+                  shadowColor: "#000",
+                  shadowOffset: { width: -4, height: 0 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 8,
+                  elevation: 8,
+                }}>
+                  <TouchableOpacity
+                    onPress={() => { setMenuVisible(false); navigation.navigate("Profile"); }}
+                    style={{ paddingVertical: 12 }}
+                  >
+                    <Text style={{ fontSize: 18, color: '#111' }}>👤 Профиль</Text>
+                  </TouchableOpacity>
+        
+                  <TouchableOpacity
+                    onPress={() => { setMenuVisible(false); navigation.navigate("MyBookings"); }}
+                    style={{ paddingVertical: 12 }}
+                  >
+                    <Text style={{ fontSize: 18, color: '#111' }}>🎟 Менің билеттерім</Text>
+                  </TouchableOpacity>
+        
+                  <TouchableOpacity
+                    onPress={() => setMenuVisible(false)}
+                    style={{ paddingVertical: 12 }}
+                  >
+                    <Text style={{ fontSize: 18, color: 'red' }}>❌ Жабу</Text>
+                  </TouchableOpacity>
+                </View>
+              </Modal>
+        
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>Мои бронирования</Text>
+        
         {bookings.length === 0 ? (
           <Text style={styles.noBookingsText}>Нет бронирований</Text>
         ) : (
