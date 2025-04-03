@@ -23,6 +23,7 @@
     "expo": "~52.0.41",
     "expo-auth-session": "~6.0.3",
     "expo-crypto": "~14.0.2",
+    "expo-file-system": "^18.0.12",
     "expo-media-library": "~17.0.6",
     "expo-sharing": "~13.0.1",
     "expo-status-bar": "~2.0.1",
