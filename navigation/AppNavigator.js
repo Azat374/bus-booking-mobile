@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from '../screens/SplashScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/login/LoginScreen';
-import SignupScreen from '../screens/SignupScreen';
+import SignupScreen from '../screens/signup/SignupScreen';
 import HomeScreen from '../screens/home/HomeScreen';
 import SearchResultScreen from '../screens/SearchResultScreen';
 import BusDetailScreen from '../screens/busDetail/BusDetailScreen';

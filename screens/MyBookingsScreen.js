@@ -8,6 +8,8 @@ import {
   FlatList,
   ScrollView,
   Alert,
+  Image,
+  Platform
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +17,16 @@ import { axiosInst } from "../service/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Feather';
+import QRCode from 'qrcode';
+import {autoTable} from'jspdf-autotable';
+import jsPDF from 'jspdf';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+
+
+
 // Функция для форматирования времени (часы:минуты)
 const formatDateTime = (dateTimeString) => {
   const date = new Date(dateTimeString);
@@ -71,18 +83,69 @@ const MyBookingsScreen = () => {
     fetchBookings();
   }, [navigation]);
 
-  // Функция для "скачивания" билета. Здесь можно интегрировать генерацию PDF или печать.
-  const downloadTicket = async (bookingId) => {
-    try {
-      // Пример вызова бэкенда для получения деталей бронирования,
-      // после чего можно сгенерировать PDF (например, используя expo-print).
-      // Здесь просто выводим Alert.
-      Alert.alert("Скачать билет", `Билет с ID ${bookingId} будет загружен`);
-    } catch (error) {
-      console.log("Error downloading ticket:", error);
-      Alert.alert("Ошибка", "Не удалось скачать билет");
+  // Функция для "скачивания" билета. Здесь можно интегрировать генерацию PDF или печать
+
+const downloadTicket = async (booking) => {
+  try {
+    const qrValue = `Booking ID: ${ticket.id}\nBus: ${ticket.busNo}\nFrom: ${ticket.from} at ${ticket.startTime}\nTo: ${ticket.to} at ${ticket.endTime}`;
+
+      const htmlContent = `
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial; padding: 20px; }
+              h1 { color: #51259B; text-align: center; }
+              .qr { text-align: center; margin: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              td, th { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            </style>
+          </head>
+          <body>
+            <h1>Dimash Bus Ticket</h1>
+            <p><strong>Bus:</strong> ${ticket.busNo}</p>
+            <p><strong>Route:</strong> ${ticket.from} → ${ticket.to}</p>
+            <p><strong>Date:</strong> ${ticket.date}</p>
+            <p><strong>Time:</strong> ${ticket.startTime} - ${ticket.endTime}</p>
+            <p><strong>Seats:</strong> ${ticket.selectedSeats.join(', ')}</p>
+            <p><strong>Total:</strong> ${ticket.selectedSeats.length * ticket.price} KZT</p>
+            <div class="qr">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrValue)}" />
+            </div>
+            <h3>Terms and Conditions</h3>
+            <ul>
+              <li>Arrive 30 minutes before departure.</li>
+              <li>No refunds after booking.</li>
+              <li>Keep your belongings safe.</li>
+            </ul>
+          </body>
+        </html>
+      `;
+
+      const file = await RNHTMLtoPDF.convert({
+        html: htmlContent,
+        fileName: `ticket_${ticket.id}`,
+        base64: false,
+      });
+
+      if (file.filePath) {
+        await Sharing.shareAsync(file.filePath);
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Ошибка', 'Не удалось сгенерировать билет.');
     }
-  };
+};
+
+const formatDate = (dateStr) => {
+  return new Date(dateStr).toLocaleDateString();
+};
+
+const formatDateTime = (dateStr) => {
+  return new Date(dateStr).toLocaleString();
+};
+
+
+
 
   // Рендер одной карточки бронирования
   const renderItem = ({ item }) => (
@@ -127,63 +190,66 @@ const MyBookingsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-        <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 20,
-                marginBottom: 10,
-              }}>
-                <Text style={styles.title}>Мои бронирования</Text>
-                <TouchableOpacity onPress={() => setMenuVisible(true)}>
-                  <Icon name="menu" size={50} color="#6B21A8" />
-                </TouchableOpacity>
-              </View>
-        
-              <Modal
-                isVisible={menuVisible}
-                onBackdropPress={() => setMenuVisible(false)}
-                animationIn="slideInRight"
-                animationOut="slideOutRight"
-                backdropOpacity={0.3}
-                style={{ margin: 0, justifyContent: 'flex-start', alignItems: 'flex-end' }}
+         <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            marginBottom: 10,
+          }}>
+            <Image
+              source={require('../assets/logo.png')}
+              style={{ width: 160, height: 60, resizeMode: 'contain' }}
+            />
+            <TouchableOpacity onPress={() => setMenuVisible(true)}>
+              <Icon name="menu" size={50} color="#6B21A8" />
+            </TouchableOpacity>
+          </View>
+    
+          <Modal
+            isVisible={menuVisible}
+            onBackdropPress={() => setMenuVisible(false)}
+            animationIn="slideInRight"
+            animationOut="slideOutRight"
+            backdropOpacity={0.3}
+            style={{ margin: 0, justifyContent: 'flex-start', alignItems: 'flex-end' }}
+          >
+            <View style={{
+              width: 250,
+              height: '100%',
+              backgroundColor: '#fff',
+              paddingTop: 60,
+              paddingHorizontal: 20,
+              borderTopLeftRadius: 20,
+              borderBottomLeftRadius: 20,
+              shadowColor: "#000",
+              shadowOffset: { width: -4, height: 0 },
+              shadowOpacity: 0.15,
+              shadowRadius: 8,
+              elevation: 8,
+            }}>
+              <TouchableOpacity
+                onPress={() => { setMenuVisible(false); navigation.navigate("Profile"); }}
+                style={{ paddingVertical: 12 }}
               >
-                <View style={{
-                  width: 250,
-                  height: '100%',
-                  backgroundColor: '#fff',
-                  paddingTop: 60,
-                  paddingHorizontal: 20,
-                  borderTopLeftRadius: 20,
-                  borderBottomLeftRadius: 20,
-                  shadowColor: "#000",
-                  shadowOffset: { width: -4, height: 0 },
-                  shadowOpacity: 0.15,
-                  shadowRadius: 8,
-                  elevation: 8,
-                }}>
-                  <TouchableOpacity
-                    onPress={() => { setMenuVisible(false); navigation.navigate("Profile"); }}
-                    style={{ paddingVertical: 12 }}
-                  >
-                    <Text style={{ fontSize: 18, color: '#111' }}>👤 Профиль</Text>
-                  </TouchableOpacity>
-        
-                  <TouchableOpacity
-                    onPress={() => { setMenuVisible(false); navigation.navigate("MyBookings"); }}
-                    style={{ paddingVertical: 12 }}
-                  >
-                    <Text style={{ fontSize: 18, color: '#111' }}>🎟 Менің билеттерім</Text>
-                  </TouchableOpacity>
-        
-                  <TouchableOpacity
-                    onPress={() => setMenuVisible(false)}
-                    style={{ paddingVertical: 12 }}
-                  >
-                    <Text style={{ fontSize: 18, color: 'red' }}>❌ Жабу</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
+                <Text style={{ fontSize: 18, color: '#111' }}>👤 Профиль</Text>
+              </TouchableOpacity>
+    
+              <TouchableOpacity
+                onPress={() => { setMenuVisible(false); navigation.navigate("MyBookings"); }}
+                style={{ paddingVertical: 12 }}
+              >
+                <Text style={{ fontSize: 18, color: '#111' }}>🎟 Менің билеттерім</Text>
+              </TouchableOpacity>
+    
+              <TouchableOpacity
+                onPress={() => setMenuVisible(false)}
+                style={{ paddingVertical: 12 }}
+              >
+                <Text style={{ fontSize: 18, color: 'red' }}>❌ Жабу</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
         
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         

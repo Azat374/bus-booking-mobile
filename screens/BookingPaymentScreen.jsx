@@ -1,5 +1,3 @@
-import Modal from "react-native-modal";
-import Icon from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -8,97 +6,139 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Alert,
   ActivityIndicator,
+  Alert,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { WebView } from "react-native-webview";
-import { axiosInst } from "../service/axiosInstance";
-import logo from "../assets/logo.png";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Modal from "react-native-modal";
+import Icon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { axiosInst } from "../service/axiosInstance"; // ваш axios-инстанс
+import logo from "../assets/logo.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const BookingPaymentScreen = () => {
+export default function BookingPaymentScreen() {
   const navigation = useNavigation();
   const route = useRoute();
 
-  // Параметры, переданные с предыдущего экрана
+  // Данные, полученные с предыдущего экрана
   const {
-    busNo = "AB1234",
+    busId,
+    userId,
     selectedSeats = [],
+    passengerDetails = [], 
     price = 600,
-    userId = 42,
-    busId = 1001,
+    busNo = "AB123",
   } = route.params || {};
 
-  // Итоговая сумма (например, в KZT)
+  // Состояния
   const totalAmount = selectedSeats.length * price;
-    const [menuVisible, setMenuVisible] = useState(false);
-  
-  // Локальный стейт для переключения между этапами "SUMMARY" и "PAYMENT"
+  const [menuVisible, setMenuVisible] = useState(false);
   const [step, setStep] = useState("SUMMARY");
-  // URL платежной сессии Stripe Checkout
-  const [checkoutUrl, setCheckoutUrl] = useState(null);
-  // Флаг загрузки платежной сессии
+  const [checkoutUrl, setCheckoutUrl] = useState("");
   const [loadingPayment, setLoadingPayment] = useState(false);
 
-  // Функция для создания платежной сессии через Stripe (через ваш сервер)
+  // -----------------------
+  // 1) Создаём сессию Stripe
+  // -----------------------
   const handleProceedToPayment = async () => {
     setLoadingPayment(true);
     try {
-      // Получаем JWT-токен (если он используется)
-      const token = await AsyncStorage.getItem("jwtToken");
-      // Формируем payload для создания платежной сессии
+      const token = await AsyncStorage.getItem("jwtToken"); // Если нужно
+      // Параметры для /payment/stripe
       const payload = {
         busId,
         userId,
-        amount: totalAmount, // Если требуется, умножьте на 100, если сумма должна быть в центах
+        amount: totalAmount,
         seatNos: selectedSeats,
       };
 
-      const response = await axiosInst.post("/payment/stripe", payload, {
+      const resp = await axiosInst.post("/payment/stripe", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      // Предположим, сервер возвращает { checkoutUrl: "https://checkout.stripe.com/pay/..." }
-      const { checkoutUrl } = response.data;
-      if (checkoutUrl) {
-        setCheckoutUrl(checkoutUrl);
-        setStep("PAYMENT");
+      if (resp.data?.checkoutUrl) {
+        setCheckoutUrl(resp.data.checkoutUrl);
+        setStep("PAYMENT"); // Переходим на этап платежа (WebView)
       } else {
         Alert.alert("Ошибка", "Не удалось создать платежную сессию");
       }
     } catch (error) {
-      console.log("Ошибка создания сессии Stripe:", error);
+      console.error("Ошибка handleProceedToPayment:", error);
       Alert.alert("Ошибка", "Платеж не инициализирован");
     }
     setLoadingPayment(false);
   };
 
-  // Обработка сообщений из WebView. Предполагается, что Stripe Checkout после успешной оплаты отправляет сообщение в формате JSON, например: { "success": true }
-  const handleWebViewMessage = (event) => {
-    try {
-      const data = JSON.parse(event.nativeEvent.data);
-      if (data.success) {
-        Alert.alert("Успех", "Оплата прошла успешно!");
-        // Навигация на экран "Мои билеты"
-        navigation.navigate("MyBookings");
-      } else if (data.cancelled) {
-        Alert.alert("Отмена", "Оплата отменена");
-        setStep("SUMMARY");
-      }
-    } catch (error) {
-      console.log("Ошибка обработки сообщения из WebView:", error);
+  // -----------------------------------------
+  // 2) Отслеживаем переход на successUrl/cancelUrl
+  // -----------------------------------------
+  const handleNavChange = async (navState) => {
+    const { url } = navState;
+    if (url.includes("payment-success")) {
+      // 2.1) Если в URL присутствует "payment-success", значит Stripe вернул пользователя
+      //      на successUrl. Можно вызывать confirmStripeBooking().
+      Alert.alert("Успех", "Платеж прошёл, сохраняем бронь в базе...");
+      await confirmStripeBooking();
+    } else if (url.includes("payment-cancel")) {
+      // 2.2) Оплата отменена
+      Alert.alert("Отмена", "Оплата отменена");
+      setStep("SUMMARY");
     }
   };
 
-  // Функция для возврата к сводке бронирования
-  const goBackToSummary = () => {
-    setStep("SUMMARY");
+  // ------------------------
+  // 3) Сохраняем бронь на бэкенде
+  // ------------------------
+  const confirmStripeBooking = async () => {
+    try {
+      const token = await AsyncStorage.getItem("jwtToken");
+      // Формируем BookingsDto
+      const seatPassengerList = passengerDetails.map((p) => ({
+        seatNo: p.seatNumber,
+        passenger: {
+          firstName: p.firstName,
+          lastName: p.lastName,
+          gender: p.gender,
+          age: p.age,
+        },
+      }));
+      const bookingsDto = {
+        busId,
+        userId,
+        fare: totalAmount,
+        seatPassengerList,
+        // paymentId - можете добавить, если нужно
+      };
+
+      // Запрос на /payment/stripe-verify
+      const resp = await axiosInst.post("/payment/stripe-verify", bookingsDto, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (resp.data.success) {
+        Alert.alert("Успешно", "Бронь сохранена! ID: " + resp.data.id);
+        navigation.navigate("MyBookings");
+      } else {
+        Alert.alert("Ошибка", resp.data.message || "Бронь не сохранена");
+        // Можно вернуть на "SUMMARY", если нужно
+        setStep("SUMMARY");
+      }
+    } catch (error) {
+      console.error("Ошибка confirmStripeBooking:", error);
+      Alert.alert("Ошибка", "Не удалось сохранить бронь");
+      setStep("SUMMARY");
+    }
   };
 
-  // Рендер сводки бронирования
+  // ----------------------------------
+  // Рендер экрана "Сводка бронирования"
+  // ----------------------------------
   const renderSummary = () => (
     <View style={styles.summarySection}>
       <Text style={styles.sectionTitle}>Сводка бронирования</Text>
@@ -117,21 +157,23 @@ const BookingPaymentScreen = () => {
         </View>
         <Text style={styles.perSeat}>Цена за место: {price} KZT</Text>
       </View>
+
       <TouchableOpacity
         style={styles.continueBtn}
         onPress={handleProceedToPayment}
         disabled={loadingPayment}
       >
-        {loadingPayment ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.continueBtnText}>Перейти к оплате</Text>
-        )}
+        {loadingPayment
+          ? <ActivityIndicator color="#fff" />
+          : <Text style={styles.continueBtnText}>Перейти к оплате</Text>
+        }
       </TouchableOpacity>
     </View>
   );
 
-  // Рендер этапа оплаты через WebView (Stripe Checkout)
+  // ------------------
+  // Рендер экрана оплаты
+  // ------------------
   const renderPayment = () => (
     <View style={styles.paymentSection}>
       <Text style={styles.sectionTitle}>Оплата</Text>
@@ -142,22 +184,31 @@ const BookingPaymentScreen = () => {
           Пожалуйста, завершите оплату через Stripe Checkout.
         </Text>
       </View>
+
       {checkoutUrl ? (
         <WebView
           source={{ uri: checkoutUrl }}
-          onMessage={handleWebViewMessage}
-          startInLoadingState={true}
+          startInLoadingState
           style={styles.webView}
+          onNavigationStateChange={handleNavChange}
+          // onMessage не нужен, так как мы используем onNavigationStateChange
         />
       ) : (
         <ActivityIndicator size="large" color="#6C2BD9" />
       )}
-      <TouchableOpacity style={styles.goBackBtn} onPress={goBackToSummary}>
+
+      <TouchableOpacity
+        style={styles.goBackBtn}
+        onPress={() => setStep("SUMMARY")}
+      >
         <Text style={styles.goBackBtnText}>← Назад к сводке</Text>
       </TouchableOpacity>
     </View>
   );
 
+  // ----------------------------------
+  // Основной рендер
+  // ----------------------------------
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SafeAreaView>
@@ -170,61 +221,57 @@ const BookingPaymentScreen = () => {
           </TouchableOpacity>
           <Image source={logo} style={styles.logo} />
 
-           <TouchableOpacity onPress={() => setMenuVisible(true)}>
-                    <Icon name="menu" size={50} color="#6B21A8" />
-                  </TouchableOpacity>
+          <TouchableOpacity onPress={() => setMenuVisible(true)}>
+            <Icon name="menu" size={44} color="#6B21A8" />
+          </TouchableOpacity>
         </View>
+
+        {/* Сайд-меню */}
         <Modal
-                isVisible={menuVisible}
-                onBackdropPress={() => setMenuVisible(false)}
-                animationIn="slideInRight"
-                animationOut="slideOutRight"
-                backdropOpacity={0.3}
-                style={{ margin: 0, justifyContent: 'flex-start', alignItems: 'flex-end' }}
-              >
-                <View style={{
-                  width: 250,
-                  height: '100%',
-                  backgroundColor: '#fff',
-                  paddingTop: 60,
-                  paddingHorizontal: 20,
-                  borderTopLeftRadius: 20,
-                  borderBottomLeftRadius: 20,
-                  shadowColor: "#000",
-                  shadowOffset: { width: -4, height: 0 },
-                  shadowOpacity: 0.15,
-                  shadowRadius: 8,
-                  elevation: 8,
-                }}>
-                  <TouchableOpacity
-                    onPress={() => { setMenuVisible(false); navigation.navigate("Profile"); }}
-                    style={{ paddingVertical: 12 }}
-                  >
-                    <Text style={{ fontSize: 18, color: '#111' }}>👤 Профиль</Text>
-                  </TouchableOpacity>
-        
-                  <TouchableOpacity
-                    onPress={() => { setMenuVisible(false); navigation.navigate("MyBookings"); }}
-                    style={{ paddingVertical: 12 }}
-                  >
-                    <Text style={{ fontSize: 18, color: '#111' }}>🎟 Менің билеттерім</Text>
-                  </TouchableOpacity>
-        
-                  <TouchableOpacity
-                    onPress={() => setMenuVisible(false)}
-                    style={{ paddingVertical: 12 }}
-                  >
-                    <Text style={{ fontSize: 18, color: 'red' }}>❌ Жабу</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
+          isVisible={menuVisible}
+          onBackdropPress={() => setMenuVisible(false)}
+          animationIn="slideInRight"
+          animationOut="slideOutRight"
+          backdropOpacity={0.3}
+          style={{ margin: 0, justifyContent: "flex-start", alignItems: "flex-end" }}
+        >
+          <View style={styles.sideMenu}>
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                navigation.navigate("Profile");
+              }}
+              style={{ paddingVertical: 12 }}
+            >
+              <Text style={{ fontSize: 18, color: "#111" }}>👤 Профиль</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                navigation.navigate("MyBookings");
+              }}
+              style={{ paddingVertical: 12 }}
+            >
+              <Text style={{ fontSize: 18, color: "#111" }}>🎟 Менің билеттерім</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setMenuVisible(false)}
+              style={{ paddingVertical: 12 }}
+            >
+              <Text style={{ fontSize: 18, color: "red" }}>❌ Жабу</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
         <Text style={styles.screenTitle}>Бронирование и оплата</Text>
+
         {step === "SUMMARY" ? renderSummary() : renderPayment()}
       </SafeAreaView>
     </ScrollView>
   );
-};
+}
 
+// Стили
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -233,11 +280,11 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: 20,
-      marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   backButton: {
     marginRight: 10,
@@ -248,7 +295,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 150,
-    height: 60,
+    height: 50,
     resizeMode: "contain",
   },
   screenTitle: {
@@ -266,7 +313,7 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
   },
-  // --- SUMMARY ---
+  // SUMMARY
   summarySection: {
     marginVertical: 20,
   },
@@ -274,11 +321,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 2,
     marginBottom: 20,
+    elevation: 2,
   },
   row: {
     flexDirection: "row",
@@ -320,7 +364,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  // --- PAYMENT ---
+  // PAYMENT
   paymentSection: {
     marginVertical: 20,
     flex: 1,
@@ -330,9 +374,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 3 },
     elevation: 2,
   },
   paymentLabel: {
@@ -366,6 +407,19 @@ const styles = StyleSheet.create({
     color: "#333",
     fontSize: 14,
   },
+  // side menu
+  sideMenu: {
+    width: 250,
+    height: "100%",
+    backgroundColor: "#fff",
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: -4, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+  },
 });
-
-export default BookingPaymentScreen;
