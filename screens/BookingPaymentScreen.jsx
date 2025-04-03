@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { axiosInst } from "../service/axiosInstance"; // ваш axios-инстанс
+import { axiosInst } from "../service/axiosInstance"; // Ваш Axios инстанс
 import logo from "../assets/logo.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -23,38 +23,34 @@ export default function BookingPaymentScreen() {
   const navigation = useNavigation();
   const route = useRoute();
 
-  // Данные, полученные с предыдущего экрана
+  // Параметры, переданные с предыдущего экрана
   const {
     busId,
     userId,
     selectedSeats = [],
-    passengerDetails = [], 
+    passengerDetails = [],
     price = 600,
     busNo = "AB123",
   } = route.params || {};
 
-  // Состояния
   const totalAmount = selectedSeats.length * price;
+
   const [menuVisible, setMenuVisible] = useState(false);
   const [step, setStep] = useState("SUMMARY");
   const [checkoutUrl, setCheckoutUrl] = useState("");
   const [loadingPayment, setLoadingPayment] = useState(false);
 
-  // -----------------------
-  // 1) Создаём сессию Stripe
-  // -----------------------
+  // 1) Создаём Checkout Session на сервере
   const handleProceedToPayment = async () => {
     setLoadingPayment(true);
     try {
-      const token = await AsyncStorage.getItem("jwtToken"); // Если нужно
-      // Параметры для /payment/stripe
+      const token = await AsyncStorage.getItem("jwtToken");
       const payload = {
         busId,
         userId,
         amount: totalAmount,
         seatNos: selectedSeats,
       };
-
       const resp = await axiosInst.post("/payment/stripe", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -62,7 +58,7 @@ export default function BookingPaymentScreen() {
       });
       if (resp.data?.checkoutUrl) {
         setCheckoutUrl(resp.data.checkoutUrl);
-        setStep("PAYMENT"); // Переходим на этап платежа (WebView)
+        setStep("PAYMENT");
       } else {
         Alert.alert("Ошибка", "Не удалось создать платежную сессию");
       }
@@ -73,30 +69,25 @@ export default function BookingPaymentScreen() {
     setLoadingPayment(false);
   };
 
-  // -----------------------------------------
-  // 2) Отслеживаем переход на successUrl/cancelUrl
-  // -----------------------------------------
+  // 2) Следим за переходом внутри WebView
   const handleNavChange = async (navState) => {
     const { url } = navState;
-    if (url.includes("payment-success")) {
-      // 2.1) Если в URL присутствует "payment-success", значит Stripe вернул пользователя
-      //      на successUrl. Можно вызывать confirmStripeBooking().
-      Alert.alert("Успех", "Платеж прошёл, сохраняем бронь в базе...");
+    // Допустим, вы указали .setSuccessUrl("https://myapp.com/payment-success")
+    // и .setCancelUrl("https://myapp.com/payment-cancel")
+    if (url.includes("success")) {
+      console.log("Успех", "Платёж прошёл, сохраняем бронь...");
       await confirmStripeBooking();
     } else if (url.includes("payment-cancel")) {
-      // 2.2) Оплата отменена
       Alert.alert("Отмена", "Оплата отменена");
       setStep("SUMMARY");
     }
   };
 
-  // ------------------------
-  // 3) Сохраняем бронь на бэкенде
-  // ------------------------
+  // 3) Сохраняем бронь через /payment/stripe-verify
   const confirmStripeBooking = async () => {
     try {
       const token = await AsyncStorage.getItem("jwtToken");
-      // Формируем BookingsDto
+
       const seatPassengerList = passengerDetails.map((p) => ({
         seatNo: p.seatNumber,
         passenger: {
@@ -106,27 +97,27 @@ export default function BookingPaymentScreen() {
           age: p.age,
         },
       }));
+
+      // Если хотите полностью совпадать с Razorpay: paymentId, razorpayOrderId, razorpaySignature
+      // будут пустые
       const bookingsDto = {
-        busId,
-        userId,
+        paymentId: "",
+        razorpayOrderId: "",
+        razorpaySignature: "",
+        busId: busId,
+        userId: await AsyncStorage.getItem("userId"),
         fare: totalAmount,
         seatPassengerList,
-        // paymentId - можете добавить, если нужно
       };
 
-      // Запрос на /payment/stripe-verify
       const resp = await axiosInst.post("/payment/stripe-verify", bookingsDto, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       if (resp.data.success) {
         Alert.alert("Успешно", "Бронь сохранена! ID: " + resp.data.id);
         navigation.navigate("MyBookings");
       } else {
         Alert.alert("Ошибка", resp.data.message || "Бронь не сохранена");
-        // Можно вернуть на "SUMMARY", если нужно
         setStep("SUMMARY");
       }
     } catch (error) {
@@ -136,9 +127,7 @@ export default function BookingPaymentScreen() {
     }
   };
 
-  // ----------------------------------
-  // Рендер экрана "Сводка бронирования"
-  // ----------------------------------
+  // Рендер экрана «Сводка»
   const renderSummary = () => (
     <View style={styles.summarySection}>
       <Text style={styles.sectionTitle}>Сводка бронирования</Text>
@@ -163,17 +152,16 @@ export default function BookingPaymentScreen() {
         onPress={handleProceedToPayment}
         disabled={loadingPayment}
       >
-        {loadingPayment
-          ? <ActivityIndicator color="#fff" />
-          : <Text style={styles.continueBtnText}>Перейти к оплате</Text>
-        }
+        {loadingPayment ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.continueBtnText}>Перейти к оплате</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
 
-  // ------------------
-  // Рендер экрана оплаты
-  // ------------------
+  // Рендер экрана «Оплата»
   const renderPayment = () => (
     <View style={styles.paymentSection}>
       <Text style={styles.sectionTitle}>Оплата</Text>
@@ -181,7 +169,7 @@ export default function BookingPaymentScreen() {
         <Text style={styles.paymentLabel}>К оплате:</Text>
         <Text style={styles.paymentAmount}>{totalAmount} KZT</Text>
         <Text style={styles.paymentNote}>
-          Пожалуйста, завершите оплату через Stripe Checkout.
+          Завершите оплату через Stripe Checkout.
         </Text>
       </View>
 
@@ -191,42 +179,30 @@ export default function BookingPaymentScreen() {
           startInLoadingState
           style={styles.webView}
           onNavigationStateChange={handleNavChange}
-          // onMessage не нужен, так как мы используем onNavigationStateChange
         />
       ) : (
         <ActivityIndicator size="large" color="#6C2BD9" />
       )}
 
-      <TouchableOpacity
-        style={styles.goBackBtn}
-        onPress={() => setStep("SUMMARY")}
-      >
+      <TouchableOpacity style={styles.goBackBtn} onPress={() => setStep("SUMMARY")}>
         <Text style={styles.goBackBtnText}>← Назад к сводке</Text>
       </TouchableOpacity>
     </View>
   );
 
-  // ----------------------------------
-  // Основной рендер
-  // ----------------------------------
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SafeAreaView>
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Image source={logo} style={styles.logo} />
-
           <TouchableOpacity onPress={() => setMenuVisible(true)}>
             <Icon name="menu" size={44} color="#6B21A8" />
           </TouchableOpacity>
         </View>
 
-        {/* Сайд-меню */}
         <Modal
           isVisible={menuVisible}
           onBackdropPress={() => setMenuVisible(false)}
@@ -252,26 +228,25 @@ export default function BookingPaymentScreen() {
               }}
               style={{ paddingVertical: 12 }}
             >
-              <Text style={{ fontSize: 18, color: "#111" }}>🎟 Менің билеттерім</Text>
+              <Text style={{ fontSize: 18, color: "#111" }}>🎟 Мои билеты</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setMenuVisible(false)}
               style={{ paddingVertical: 12 }}
             >
-              <Text style={{ fontSize: 18, color: "red" }}>❌ Жабу</Text>
+              <Text style={{ fontSize: 18, color: "red" }}>❌ Закрыть</Text>
             </TouchableOpacity>
           </View>
         </Modal>
 
         <Text style={styles.screenTitle}>Бронирование и оплата</Text>
-
         {step === "SUMMARY" ? renderSummary() : renderPayment()}
       </SafeAreaView>
     </ScrollView>
   );
 }
 
-// Стили
+// Стили:
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -286,37 +261,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 10,
   },
-  backButton: {
-    marginRight: 10,
-  },
-  backButtonText: {
-    color: "#693BB8",
-    fontSize: 36,
-  },
-  logo: {
-    width: 150,
-    height: 50,
-    resizeMode: "contain",
-  },
+  backButton: { marginRight: 10 },
+  backButtonText: { color: "#693BB8", fontSize: 36 },
+  logo: { width: 150, height: 50, resizeMode: "contain" },
   screenTitle: {
-    fontSize: 22,
-    fontWeight: "700",
-    marginTop: 10,
-    marginBottom: 20,
-    color: "#333",
-    textAlign: "center",
+    fontSize: 22, fontWeight: "700",
+    marginTop: 10, marginBottom: 20,
+    textAlign: "center", color: "#333",
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 15,
+    fontSize: 18, fontWeight: "700",
+    marginBottom: 15, textAlign: "center",
     color: "#333",
-    textAlign: "center",
   },
-  // SUMMARY
-  summarySection: {
-    marginVertical: 20,
-  },
+  summarySection: { marginVertical: 20 },
   card: {
     backgroundColor: "#fff",
     borderRadius: 16,
@@ -329,29 +287,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 12,
   },
-  label: {
-    fontSize: 16,
-    color: "#555",
-  },
-  value: {
-    fontSize: 16,
-    color: "#222",
-    fontWeight: "500",
-  },
-  totalLabel: {
-    fontWeight: "600",
-    fontSize: 18,
-  },
-  totalValue: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#6C2BD9",
-  },
+  label: { fontSize: 16, color: "#555" },
+  value: { fontSize: 16, color: "#222", fontWeight: "500" },
+  totalLabel: { fontSize: 18, fontWeight: "600" },
+  totalValue: { fontSize: 18, fontWeight: "700", color: "#6C2BD9" },
   perSeat: {
-    marginTop: 10,
-    color: "#888",
-    textAlign: "right",
-    fontSize: 14,
+    marginTop: 10, fontSize: 14,
+    textAlign: "right", color: "#888",
   },
   continueBtn: {
     backgroundColor: "#6C2BD9",
@@ -359,16 +301,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: "center",
   },
-  continueBtnText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  // PAYMENT
-  paymentSection: {
-    marginVertical: 20,
-    flex: 1,
-  },
+  continueBtnText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  paymentSection: { marginVertical: 20, flex: 1 },
   paymentCard: {
     backgroundColor: "#fff",
     borderRadius: 16,
@@ -376,21 +310,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 2,
   },
-  paymentLabel: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 4,
-  },
-  paymentAmount: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#6C2BD9",
-  },
-  paymentNote: {
-    fontSize: 14,
-    color: "#888",
-    marginTop: 10,
-  },
+  paymentLabel: { fontSize: 16, color: "#555", marginBottom: 4 },
+  paymentAmount: { fontSize: 22, fontWeight: "700", color: "#6C2BD9" },
+  paymentNote: { fontSize: 14, color: "#888", marginTop: 10 },
   webView: {
     height: 400,
     borderRadius: 16,
@@ -403,11 +325,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: "center",
   },
-  goBackBtnText: {
-    color: "#333",
-    fontSize: 14,
-  },
-  // side menu
+  goBackBtnText: { color: "#333", fontSize: 14 },
   sideMenu: {
     width: 250,
     height: "100%",

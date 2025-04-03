@@ -181,7 +181,7 @@ export default function BusDetailsScreen() {
     }
     // Всё ок
     navigation.navigate("BookingSummary", {
-      id,
+      busId:id,
       busNo,
       from,
       to,
