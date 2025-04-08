@@ -11,7 +11,8 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { axiosInst } from "../service/axiosInstance";
-
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 const DashedLine = () => (
   <View style={styles.dashedLineContainer}>
     <View style={styles.dashedLine} />
@@ -31,7 +32,7 @@ const DateSeatSelector = ({ date, seats }) => (
       <Text style={styles.dateText}>{date}</Text>
     </View>
     <View style={styles.seatsContainer}>
-      <Text style={styles.seatsText}>{seats} орын</Text>
+      <Text style={styles.seatsText}>{seats} {t("searchResultScreen.seat")}</Text>
     </View>
   </View>
 );
@@ -49,13 +50,13 @@ const RouteCard = ({ bus, passengers, onBook }) => (
     <View style={styles.timeLocationRow}>
       <Text style={styles.timeText}>{formatTime(bus.startTime)}</Text>
       <DashedLine />
-      <Text style={styles.locationText}>Қайдан {bus.from}</Text>
+      <Text style={styles.locationText}>{t("homeScreen.from")}: {bus.from}</Text>
     </View>
 
     <View style={styles.timeLocationRow}>
       <Text style={styles.timeText}>{formatTime(bus.endTime)}</Text>
       <DashedLine />
-      <Text style={styles.locationText}>Қайда {bus.to}</Text>
+      <Text style={styles.locationText}>{t("homeScreen.to")}: {bus.to}</Text>
     </View>
 
     <View style={styles.footer}>
@@ -67,7 +68,7 @@ const RouteCard = ({ bus, passengers, onBook }) => (
         onPress={() => onBook(bus)}
         disabled={bus.availableSeats <= 0}
       >
-        <Text style={styles.bookButtonText}>Брондау</Text>
+        <Text style={styles.bookButtonText}>{t("searchResultScreen.bookNow")}</Text>
       </TouchableOpacity>
     </View>
   </View>
@@ -81,7 +82,7 @@ export default function BusTicketingScreen() {
 
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { t } = useTranslation();
   useEffect(() => {
     fetchStations();
     fetchBuses();
@@ -151,8 +152,8 @@ export default function BusTicketingScreen() {
         </View>
 
         <View style={styles.locationContainer}>
-          <LocationSelector label="Қайдан" location={getStationName(from)} />
-          <LocationSelector label="Қайда" location={getStationName(to)} />
+          <LocationSelector label={t("homeScreen.from")} location={getStationName(from)} />
+          <LocationSelector label={t("homeScreen.to")} location={getStationName(to)} />
         </View>
 
         <DateSeatSelector date={date} seats={passengers} />
@@ -160,7 +161,7 @@ export default function BusTicketingScreen() {
         {loading ? (
           <ActivityIndicator size="large" color="#51259B" style={{ marginTop: 40 }} />
         ) : buses.length === 0 ? (
-          <Text style={styles.noBusesText}>No buses found</Text>
+          <Text style={styles.noBusesText}>{t("searchResultScreen.noBusesFound")}</Text>
         ) : (
           buses.map((bus) => (
             <RouteCard key={bus.id} bus={bus} passengers={passengers} onBook={handleBookNow} />

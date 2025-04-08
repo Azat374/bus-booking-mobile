@@ -73,7 +73,11 @@ export default App;
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.azatb.busbookingmobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -83,9 +87,72 @@ export default App;
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9122dcae-331b-4904-aa3d-736ea97f62a4"
+      }
     }
   }
 }
+
+
+
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\eas.json ====
+{
+  "cli": {
+    "version": ">= 16.1.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
+
+
+
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\i18n.js ====
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import * as Localization from 'react-native-localize';
+
+// Импорт локальных JSON файлов
+import en from './locales/en.json';
+import ru from './locales/ru.json';
+import kk from './locales/kk.json';
+
+// Определение языка устройства
+const locales = Localization.getLocales();
+const deviceLanguage = locales.length ? locales[0].languageCode : 'en';
+
+i18n
+  .use(initReactI18next)
+  .init({
+    fallbackLng: 'en',
+    lng: deviceLanguage,
+    resources: {
+      en: { translation: en },
+      ru: { translation: ru },
+      kk: { translation: kk },
+    },
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+
+export default i18n;
 
 
 
@@ -100,22 +167,69 @@ import App from './App';
 registerRootComponent(App);
 
 
-==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\.expo\devices.json ====
+
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\package-lock.json ====
 {
-  "devices": []
-}
+  "name": "bus-booking-mobile",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "bus-booking-mobile",
+      "version": "1.0.0",
+      "license": "0BSD",
+      "dependencies": {
+        "@expo/metro-runtime": "~4.0.1",
+        "@expo/vector-icons": "^14.0.2",
+        "@react-native-async-storage/async-storage": "1.23.1",
+        "@react-native-community/datetimepicker": "8.2.0",
+        "@react-native-picker/picker": "2.9.0",
+        "@react-navigation/native": "^7.0.19",
+        "@react-navigation/native-stack": "^7.3.3",
+        "axios": "^1.8.4",
+        "expo": "~52.0.41",
+        "expo-auth-session": "~6.0.3",
+        "expo-crypto": "~14.0.2",
+        "expo-file-system": "^18.0.12",
+        "expo-media-library": "~17.0.6",
+        "expo-sharing": "~13.0.1",
+        "expo-status-bar": "~2.0.1",
+        "i18next": "^24.2.3",
+        "i18next-browser-languagedetector": "^8.0.4",
+        "i18next-http-backend": "^3.0.2",
+        "jspdf": "^3.0.1",
+        "jspdf-autotable": "^5.0.2",
+        "moment": "^2.30.1",
+        "moti": "^0.30.0",
+        "qrcode": "^1.5.4",
+        "react": "18.3.1",
+        "react-i18next": "^15.4.1",
+        "react-icons": "^5.5.0",
+        "react-native": "0.76.7",
+        "react-native-animatable": "^1.4.0",
+        "react-native-calendars": "^1.1310.0",
+        "react-native-dropdown-picker": "^5.4.6",
+        "react-native-gesture-handler": "~2.20.2",
+        "react-native-html-to-pdf": "^0.12.0",
+        "react-native-localize": "^3.4.1",
+        "react-native-modal": "^14.0.0-rc.1",
+        "react-native-paper": "^5.13.1",
+        "react-native-razorpay": "^2.3.0",
+        "react-native-reanimated": "~3.16.1",
+        "react-native-safe-area-context": "4.12.0",
+        "react-native-screens": "~4.4.0",
+        "react-native-vector-icons": "^10.2.0",
+        "react-native-web": "~0.19.13",
+        "react-native-webview": "13.12.5",
+        "tailwind-rn": "^4.2.0"
+      },
+      "devDependencies": {
+        "@babel/core": "^7.20.0",
+        "tailwindcss": "^3.0.23"
+      }
+    },
 
-
-
-==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\.expo\README.md ====
-> Why do I have a folder named ".expo" in my project?
-The ".expo" folder is created when an Expo project is started using "expo start" command.
-> What do the files contain?
-- "devices.json": contains information about devices that have recently opened this project. This is used to populate the "Development sessions" list in your development builds.
-- "settings.json": contains the server configuration that is used to serve the application manifest.
-> Should I commit the ".expo" folder?
-No, you should not share the ".expo" folder. It does not contain any information that is relevant for other developers working on the project, it is specific to your machine.
-Upon project creation, the ".expo" folder is already added to your ".gitignore" file.
 
 
 
@@ -164,16 +278,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from '../screens/SplashScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/login/LoginScreen';
-import SignupScreen from '../screens/SignupScreen';
+import SignupScreen from '../screens/signup/SignupScreen';
 import HomeScreen from '../screens/home/HomeScreen';
 import SearchResultScreen from '../screens/SearchResultScreen';
-import BusDetailScreen from '../screens/busDetail/BusDetailScreen.jsxn';
+import BusDetailScreen from '../screens/busDetail/BusDetailScreen';
 import SeatSelectionScreen from '../screens/SeatSelectionScreen';
 import PassengerDetailsScreen from '../screens/PassengerDetailsScreen.js';
 import PaymentScreen from '../screens/PaymentScreen';
-import BookingSummaryScreen from '../screens/BookingSummaryScreen';
+import BookingPaymentScreen from '../screens/BookingPaymentScreen';
 import MyBookingsScreen from '../screens/MyBookingsScreen.js';
-
+import ProfileScreen from '../screens/ProfileScreen.js';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -187,10 +301,11 @@ const AppNavigator = () => {
         <Stack.Screen name="SearchResult" component={SearchResultScreen} />
         <Stack.Screen name="BusDetail" component={BusDetailScreen} />
         <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />
-        <Stack.Screen name="BookingSummary" component={BookingSummaryScreen} />
+        <Stack.Screen name="BookingSummary" component={BookingPaymentScreen} />
         {/*<Stack.Screen name="PassengerDetails" component={PassengerDetailsScreen} />*/}
         <Stack.Screen name="Payment" component={PaymentScreen} />
-        {/*<Stack.Screen name="MyBookings" component={MyBookingsScreen} />*/}
+        <Stack.Screen name="MyBookings" component={MyBookingsScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -199,140 +314,821 @@ const AppNavigator = () => {
 export default AppNavigator;
 
 
-==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\BookingSummaryScreen.js ====
-import React from 'react';
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\BookingPaymentScreen.jsx ====
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+  Image,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { WebView } from "react-native-webview";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Modal from "react-native-modal";
+import Icon from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BookingSummaryScreen = () => {
+import { axiosInst } from "../service/axiosInstance"; // Ваш Axios инстанс
+import logo from "../assets/logo.png";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function BookingPaymentScreen() {
   const navigation = useNavigation();
   const route = useRoute();
 
+  // Параметры, переданные с предыдущего экрана
   const {
-    busNumber,
-    selectedSeats,
-    price,
-  } = route.params;
+    busId,
+    userId,
+    selectedSeats = [],
+    passengerDetails = [],
+    price = 600,
+    busNo = "AB123",
+  } = route.params || {};
 
   const totalAmount = selectedSeats.length * price;
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={styles.back}>←</Text>
-      </TouchableOpacity>
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [step, setStep] = useState("SUMMARY");
+  const [checkoutUrl, setCheckoutUrl] = useState("");
+  const [loadingPayment, setLoadingPayment] = useState(false);
 
-      <Text style={styles.title}>Complete Booking</Text>
+  // 1) Создаём Checkout Session на сервере
+  const handleProceedToPayment = async () => {
+    setLoadingPayment(true);
+    try {
+      const token = await AsyncStorage.getItem("jwtToken");
+      const payload = {
+        busId,
+        userId,
+        amount: totalAmount,
+        seatNos: selectedSeats,
+      };
+      const resp = await axiosInst.post("/payment/stripe", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (resp.data?.checkoutUrl) {
+        setCheckoutUrl(resp.data.checkoutUrl);
+        setStep("PAYMENT");
+      } else {
+        Alert.alert("Ошибка", "Не удалось создать платежную сессию");
+      }
+    } catch (error) {
+      console.error("Ошибка handleProceedToPayment:", error);
+      Alert.alert("Ошибка", "Платеж не инициализирован");
+    }
+    setLoadingPayment(false);
+  };
 
+  // 2) Следим за переходом внутри WebView
+  const handleNavChange = async (navState) => {
+    const { url } = navState;
+    // Допустим, вы указали .setSuccessUrl("https://myapp.com/payment-success")
+    // и .setCancelUrl("https://myapp.com/payment-cancel")
+    if (url.includes("success")) {
+      console.log("Успех", "Платёж прошёл, сохраняем бронь...");
+      await confirmStripeBooking();
+    } else if (url.includes("payment-cancel")) {
+      Alert.alert("Отмена", "Оплата отменена");
+      setStep("SUMMARY");
+    }
+  };
+
+  // 3) Сохраняем бронь через /payment/stripe-verify
+  const confirmStripeBooking = async () => {
+    try {
+      const token = await AsyncStorage.getItem("jwtToken");
+
+      const seatPassengerList = passengerDetails.map((p) => ({
+        seatNo: p.seatNumber,
+        passenger: {
+          firstName: p.firstName,
+          lastName: p.lastName,
+          gender: p.gender,
+          age: p.age,
+        },
+      }));
+
+      // Если хотите полностью совпадать с Razorpay: paymentId, razorpayOrderId, razorpaySignature
+      // будут пустые
+      const bookingsDto = {
+        paymentId: "",
+        razorpayOrderId: "",
+        razorpaySignature: "",
+        busId: busId,
+        userId: await AsyncStorage.getItem("userId"),
+        fare: totalAmount,
+        seatPassengerList,
+      };
+
+      const resp = await axiosInst.post("/payment/stripe-verify", bookingsDto, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (resp.data.success) {
+        Alert.alert("Успешно", "Бронь сохранена! ID: " + resp.data.id);
+        navigation.navigate("MyBookings");
+      } else {
+        Alert.alert("Ошибка", resp.data.message || "Бронь не сохранена");
+        setStep("SUMMARY");
+      }
+    } catch (error) {
+      console.error("Ошибка confirmStripeBooking:", error);
+      Alert.alert("Ошибка", "Не удалось сохранить бронь");
+      setStep("SUMMARY");
+    }
+  };
+
+  // Рендер экрана «Сводка»
+  const renderSummary = () => (
+    <View style={styles.summarySection}>
+      <Text style={styles.sectionTitle}>Сводка бронирования</Text>
       <View style={styles.card}>
         <View style={styles.row}>
-          <Text style={styles.label}>Ticket:</Text>
-          <Text style={styles.value}>{selectedSeats.length} Seats</Text>
+          <Text style={styles.label}>Автобус:</Text>
+          <Text style={styles.value}>{busNo}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Bus No:</Text>
-          <Text style={styles.value}>{busNumber}</Text>
+          <Text style={styles.label}>Места:</Text>
+          <Text style={styles.value}>{selectedSeats.join(", ")}</Text>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Seat No:</Text>
-          <Text style={styles.value}>{selectedSeats.join(' & ')}</Text>
-        </View>
-
         <View style={[styles.row, { marginTop: 20 }]}>
-          <Text style={[styles.label, styles.totalLabel]}>Total:</Text>
-          <Text style={[styles.totalValue]}>{totalAmount} KZT</Text>
+          <Text style={[styles.label, styles.totalLabel]}>Итого:</Text>
+          <Text style={styles.totalValue}>{totalAmount} KZT</Text>
         </View>
-
-        <Text style={styles.perSeat}>Per ticket is {price}</Text>
+        <Text style={styles.perSeat}>Цена за место: {price} KZT</Text>
       </View>
 
       <TouchableOpacity
-        style={styles.payBtn}
-        onPress={() => navigation.navigate('Payment', {
-          ...route.params,
-          totalAmount,
-        })}
+        style={styles.continueBtn}
+        onPress={handleProceedToPayment}
+        disabled={loadingPayment}
       >
-        <Text style={styles.payBtnText}>Continue to payment</Text>
+        {loadingPayment ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.continueBtnText}>Перейти к оплате</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
-};
 
-export default BookingSummaryScreen;
+  // Рендер экрана «Оплата»
+  const renderPayment = () => (
+    <View style={styles.paymentSection}>
+      <Text style={styles.sectionTitle}>Оплата</Text>
+      <View style={styles.paymentCard}>
+        <Text style={styles.paymentLabel}>К оплате:</Text>
+        <Text style={styles.paymentAmount}>{totalAmount} KZT</Text>
+        <Text style={styles.paymentNote}>
+          Завершите оплату через Stripe Checkout.
+        </Text>
+      </View>
 
+      {checkoutUrl ? (
+        <WebView
+          source={{ uri: checkoutUrl }}
+          startInLoadingState
+          style={styles.webView}
+          onNavigationStateChange={handleNavChange}
+        />
+      ) : (
+        <ActivityIndicator size="large" color="#6C2BD9" />
+      )}
+
+      <TouchableOpacity style={styles.goBackBtn} onPress={() => setStep("SUMMARY")}>
+        <Text style={styles.goBackBtnText}>← Назад к сводке</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <SafeAreaView>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.backButtonText}>←</Text>
+          </TouchableOpacity>
+          <Image source={logo} style={styles.logo} />
+          <TouchableOpacity onPress={() => setMenuVisible(true)}>
+            <Icon name="menu" size={44} color="#6B21A8" />
+          </TouchableOpacity>
+        </View>
+
+        <Modal
+          isVisible={menuVisible}
+          onBackdropPress={() => setMenuVisible(false)}
+          animationIn="slideInRight"
+          animationOut="slideOutRight"
+          backdropOpacity={0.3}
+          style={{ margin: 0, justifyContent: "flex-start", alignItems: "flex-end" }}
+        >
+          <View style={styles.sideMenu}>
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                navigation.navigate("Profile");
+              }}
+              style={{ paddingVertical: 12 }}
+            >
+              <Text style={{ fontSize: 18, color: "#111" }}>👤 Профиль</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                navigation.navigate("MyBookings");
+              }}
+              style={{ paddingVertical: 12 }}
+            >
+              <Text style={{ fontSize: 18, color: "#111" }}>🎟 Мои билеты</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setMenuVisible(false)}
+              style={{ paddingVertical: 12 }}
+            >
+              <Text style={{ fontSize: 18, color: "red" }}>❌ Закрыть</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Text style={styles.screenTitle}>Бронирование и оплата</Text>
+        {step === "SUMMARY" ? renderSummary() : renderPayment()}
+      </SafeAreaView>
+    </ScrollView>
+  );
+}
+
+// Стили:
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 24,
-    backgroundColor: '#fff',
+    flexGrow: 1,
+    backgroundColor: "#fafafa",
+    paddingHorizontal: 24,
+    paddingTop: 20,
   },
-  back: {
-    fontSize: 20,
-    color: '#6C2BD9',
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginTop: 20,
-    marginBottom: 30,
+  backButton: { marginRight: 10 },
+  backButtonText: { color: "#693BB8", fontSize: 36 },
+  logo: { width: 150, height: 50, resizeMode: "contain" },
+  screenTitle: {
+    fontSize: 22, fontWeight: "700",
+    marginTop: 10, marginBottom: 20,
+    textAlign: "center", color: "#333",
   },
+  sectionTitle: {
+    fontSize: 18, fontWeight: "700",
+    marginBottom: 15, textAlign: "center",
+    color: "#333",
+  },
+  summarySection: { marginVertical: 20 },
   card: {
-    backgroundColor: '#f9f6f6',
+    backgroundColor: "#fff",
     borderRadius: 16,
     padding: 20,
+    marginBottom: 20,
+    elevation: 2,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 12,
   },
-  label: {
-    fontSize: 16,
-    color: '#555',
-  },
-  value: {
-    fontSize: 16,
-    color: '#222',
-    fontWeight: '500',
-  },
-  totalLabel: {
-    fontWeight: '600',
-    fontSize: 18,
-  },
-  totalValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#6C2BD9',
-  },
+  label: { fontSize: 16, color: "#555" },
+  value: { fontSize: 16, color: "#222", fontWeight: "500" },
+  totalLabel: { fontSize: 18, fontWeight: "600" },
+  totalValue: { fontSize: 18, fontWeight: "700", color: "#6C2BD9" },
   perSeat: {
-    marginTop: 10,
-    color: '#666',
-    textAlign: 'right',
-    fontSize: 14,
+    marginTop: 10, fontSize: 14,
+    textAlign: "right", color: "#888",
   },
-  payBtn: {
-    backgroundColor: '#6C2BD9',
+  continueBtn: {
+    backgroundColor: "#6C2BD9",
     borderRadius: 28,
     paddingVertical: 14,
-    marginTop: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
-  payBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+  continueBtnText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  paymentSection: { marginVertical: 20, flex: 1 },
+  paymentCard: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    elevation: 2,
+  },
+  paymentLabel: { fontSize: 16, color: "#555", marginBottom: 4 },
+  paymentAmount: { fontSize: 22, fontWeight: "700", color: "#6C2BD9" },
+  paymentNote: { fontSize: 14, color: "#888", marginTop: 10 },
+  webView: {
+    height: 400,
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 20,
+  },
+  goBackBtn: {
+    backgroundColor: "#ddd",
+    borderRadius: 28,
+    paddingVertical: 10,
+    alignItems: "center",
+  },
+  goBackBtnText: { color: "#333", fontSize: 14 },
+  sideMenu: {
+    width: 250,
+    height: "100%",
+    backgroundColor: "#fff",
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: -4, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });
 
 
 
 ==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\MyBookingsScreen.js ====
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  Alert,
+  Image,
+  Platform
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { axiosInst } from "../service/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Modal from "react-native-modal";
+import Icon from 'react-native-vector-icons/Feather';
+import QRCode from 'qrcode';
+import {autoTable} from'jspdf-autotable';
+import jsPDF from 'jspdf';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+
+
+// Функция для форматирования времени (часы:минуты)
+const formatDateTime = (dateTimeString) => {
+  const date = new Date(dateTimeString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${day}/${month} ${hours}:${minutes}`;
+};
+
+// Функция для форматирования даты (ГГГГ-ММ-ДД)
+const formatDate = (dateString) => {
+  const dateObj = new Date(dateString);
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const MyBookingsScreen = () => {
+  const navigation = useNavigation();
+
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // При монтировании компонента получаем токен и id текущего пользователя,
+  // затем загружаем бронирования с бэкенда
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const token = await AsyncStorage.getItem("jwtToken");
+        const storedId = await AsyncStorage.getItem("userId");
+        if (!token) {
+          // Если токена нет, перенаправляем на экран логина
+          navigation.navigate("Login");
+          return;
+        }
+        // Получаем бронирования пользователя
+        const res = await axiosInst.get(`/bookings/getbookings/${storedId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setBookings(res.data);
+      } catch (error) {
+        console.log("Error fetching bookings:", error);
+        Alert.alert("Ошибка", "Не удалось загрузить бронирования");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, [navigation]);
+
+  // Функция для "скачивания" билета. Здесь можно интегрировать генерацию PDF или печать
+
+
+const downloadTicketBeta = async (ticket) => {
+  try {
+    
+
+    const qrValue = `Booking ID: ${ticket.id}\nBus: ${ticket.busNo}\nFrom: ${ticket.from} at ${ticket.startTime}\nTo: ${ticket.to} at ${ticket.endTime}`;
+
+      const htmlContent = `
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial; padding: 20px; }
+              h1 { color: #51259B; text-align: center; }
+              .qr { text-align: center; margin: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              td, th { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            </style>
+          </head>
+          <body>
+            <h1>Dimash Bus Ticket</h1>
+            <p><strong>Bus:</strong> ${ticket.busNo}</p>
+            <p><strong>Route:</strong> ${ticket.from} → ${ticket.to}</p>
+            <p><strong>Date:</strong> ${ticket.date}</p>
+            <p><strong>Time:</strong> ${ticket.startTime} - ${ticket.endTime}</p>
+            <p><strong>Seats:</strong> ${ticket.selectedSeats.join(', ')}</p>
+            <p><strong>Total:</strong> ${ticket.selectedSeats.length * ticket.price} KZT</p>
+            <div class="qr">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrValue)}" />
+            </div>
+            <h3>Terms and Conditions</h3>
+            <ul>
+              <li>Arrive 30 minutes before departure.</li>
+              <li>No refunds after booking.</li>
+              <li>Keep your belongings safe.</li>
+            </ul>
+          </body>
+        </html>
+      `;
+
+      const file = await RNHTMLtoPDF.convert({
+        html: htmlContent,
+        fileName: `ticket_${ticket.id}`,
+        base64: false,
+      });
+
+      if (file.filePath) {
+        await Sharing.shareAsync(file.filePath);
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Ошибка', 'Не удалось сгенерировать билет.');
+    }
+};
+
+const formatDate = (dateStr) => {
+  return new Date(dateStr).toLocaleDateString();
+};
+
+const formatDateTime = (dateStr) => {
+  return new Date(dateStr).toLocaleString();
+};
+
+
+
+
+  // Рендер одной карточки бронирования
+  const renderItem = ({ item }) => (
+    <View style={styles.bookingCard}>
+      <Text style={styles.busNo}>Автобус: {item.busNo}</Text>
+      <View style={styles.infoRow}>
+        <Text style={styles.infoLabel}>Откуда:</Text>
+        <Text style={styles.infoValue}>
+          {item.from} ({formatDateTime(item.startTime)})
+        </Text>
+      </View>
+      <View style={styles.infoRow}>
+        <Text style={styles.infoLabel}>Куда:</Text>
+        <Text style={styles.infoValue}>
+          {item.to} ({formatDateTime(item.endTime)})
+        </Text>
+      </View>
+      <View style={styles.infoRow}>
+        <Text style={styles.infoLabel}>Дата бронирования:</Text>
+        <Text style={styles.infoValue}>{formatDate(item.bookingDateTime)}</Text>
+      </View>
+      <View style={styles.infoRow}>
+        <Text style={styles.infoLabel}>Тариф:</Text>
+        <Text style={styles.infoValue}>{item.totalFare} KZT</Text>
+      </View>
+      <TouchableOpacity
+        style={styles.downloadBtn}
+        onPress={() => downloadTicket(item)}
+      >
+        <Text style={styles.downloadBtnText}>Скачать билет</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6C2BD9" />
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+         <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            marginBottom: 10,
+          }}>
+            <Image
+              source={require('../assets/logo.png')}
+              style={{ width: 160, height: 60, resizeMode: 'contain' }}
+            />
+            <TouchableOpacity onPress={() => setMenuVisible(true)}>
+              <Icon name="menu" size={50} color="#6B21A8" />
+            </TouchableOpacity>
+          </View>
+    
+          <Modal
+            isVisible={menuVisible}
+            onBackdropPress={() => setMenuVisible(false)}
+            animationIn="slideInRight"
+            animationOut="slideOutRight"
+            backdropOpacity={0.3}
+            style={{ margin: 0, justifyContent: 'flex-start', alignItems: 'flex-end' }}
+          >
+            <View style={{
+              width: 250,
+              height: '100%',
+              backgroundColor: '#fff',
+              paddingTop: 60,
+              paddingHorizontal: 20,
+              borderTopLeftRadius: 20,
+              borderBottomLeftRadius: 20,
+              shadowColor: "#000",
+              shadowOffset: { width: -4, height: 0 },
+              shadowOpacity: 0.15,
+              shadowRadius: 8,
+              elevation: 8,
+            }}>
+              <TouchableOpacity
+                onPress={() => { setMenuVisible(false); navigation.navigate("Profile"); }}
+                style={{ paddingVertical: 12 }}
+              >
+                <Text style={{ fontSize: 18, color: '#111' }}>👤 Профиль</Text>
+              </TouchableOpacity>
+    
+              <TouchableOpacity
+                onPress={() => { setMenuVisible(false); navigation.navigate("MyBookings"); }}
+                style={{ paddingVertical: 12 }}
+              >
+                <Text style={{ fontSize: 18, color: '#111' }}>🎟 Менің билеттерім</Text>
+              </TouchableOpacity>
+    
+              <TouchableOpacity
+                onPress={() => setMenuVisible(false)}
+                style={{ paddingVertical: 12 }}
+              >
+                <Text style={{ fontSize: 18, color: 'red' }}>❌ Жабу</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+        
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        
+        {bookings.length === 0 ? (
+          <Text style={styles.noBookingsText}>Нет бронирований</Text>
+        ) : (
+          <FlatList
+            data={bookings.slice().reverse()}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.list}
+          />
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fafafa",
+  },
+  scrollContainer: {
+    padding: 24,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  noBookingsText: {
+    fontSize: 18,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  bookingCard: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    // Тень для iOS
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    // Тень для Android
+    elevation: 3,
+  },
+  busNo: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 10,
+    color: "#6C2BD9",
+  },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 6,
+  },
+  infoLabel: {
+    fontSize: 16,
+    color: "#555",
+  },
+  infoValue: {
+    fontSize: 16,
+    color: "#222",
+    fontWeight: "500",
+  },
+  downloadBtn: {
+    backgroundColor: "#6C2BD9",
+    borderRadius: 28,
+    paddingVertical: 10,
+    alignItems: "center",
+    marginTop: 15,
+  },
+  downloadBtnText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  list: {
+    paddingBottom: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+
+
+export async function downloadTicket(item) {
+  try {
+    const response = await axiosInst.get(`/bookings/getbooking/${item.id}`);
+    const ticketDetails = response.data;
+
+    console.log("Билетті жүктеу:", ticketDetails);
+    // 2) Создаём объект jsPDF
+    const doc = new jsPDF();
+
+    // Пример: встраиваем TTF, если нужно
+    const amiriFont = "AAEAAAASAQAABAAgAAA";
+  
+    // Set font styles
+    doc.addFileToVFS("Amiri-Regular.ttf", amiriFont);
+    doc.addFont("Amiri-Regular.ttf", "Amiri", "normal");
+    doc.setFont("Amiri");
+
+    // Задаём фон (просто белый)
+    doc.setFillColor('#ffffff');
+    doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+
+    doc.setFontSize(8);
+    doc.text("This PDF is generated by Dimash Bus System 2024", 10, 10);
+
+    // Если нужно вставлять картинку-логотип (base64):
+    // doc.addImage(logoDataUrl, 'PNG', 10, 15, 40, 40);
+
+    // Крупный заголовок
+    doc.setFontSize(24);
+    doc.setTextColor('#333');
+    doc.text("Dimash Bus", doc.internal.pageSize.width / 2, 30, { align: 'center' });
+
+    // Рисуем прямоугольник (рамку) – опционально
+    doc.setDrawColor('#333');
+    doc.setLineWidth(0.5);
+    doc.rect(5, 15, doc.internal.pageSize.width - 10, doc.internal.pageSize.height - 25);
+
+    // 3) Генерируем QR-код (base64)
+    const qrText = `Брондау ID: ${item.id}\nАвтобус №: ${ticketDetails.busNo}\nҚайдан: ${ticketDetails.from} ${formatDateTime(ticketDetails.startTime)}\nБрондау күні: ${formatDate(ticketDetails.bookingDateTime)}`;
+    // qrDataUrl – base64-строка "data:image/png;base64,..."
+
+    // Добавляем QR-код на PDF
+
+    // Текст "Билет туралы мәлімет"
+    doc.setFontSize(16);
+    doc.setTextColor('#333');
+    doc.text(`Билет туралы мәлімет - Брондау ID ${item.id}`, 20, 70);
+
+    doc.setFontSize(12);
+    doc.text(`Автобус №: ${ticketDetails.busNo}`, 20, 90);
+    doc.text(`Қайдан: ${ticketDetails.from} - ${formatDateTime(ticketDetails.startTime)}`, 20, 105);
+    doc.text(`Қайда: ${ticketDetails.to} - ${formatDateTime(ticketDetails.endTime)}`, 20, 120);
+    doc.text(`Брондау күні: ${formatDate(ticketDetails.bookingDateTime)}`, 20, 135);
+
+    // Кол-во пассажиров
+    const totalPassengers = ticketDetails.seatPassengerList.length;
+    doc.text(`Жолаушылар саны: ${totalPassengers}`, 20, 150);
+
+    // 4) Таблица пассажиров (jspdf-autotable)
+    const startY = 170;
+    const passengerTable = ticketDetails.seatPassengerList.map((p, index) => [
+      index + 1,
+      p.seatNo,
+      `${p.passenger.firstName} ${p.passenger.lastName}`,
+      p.passenger.gender,
+      p.passenger.age
+    ]);
+
+    autoTable(doc, {
+      startY,
+      head: [['#', 'Орын', 'Аты', 'Жыныс', 'Жасы']],
+      body: passengerTable,
+      margin: { top: 10 },
+      styles: { font: "Amiri", fontStyle: 'normal', fontSize: 10 }
+      // Если нужны переносы, надо следить за overflow
+    });
+
+    // 5) Шарттар мен ережелер
+    let afterTableY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(10);
+    doc.setTextColor('#666');
+    const termsAndConditions = `Шарттар мен ережелер:
+1. Жөнелту уақытынан 30 минут бұрын келуіңіз сұралады.
+2. Брондаудан кейін қайтару немесе бас тарту мүмкін емес.
+3. Сапар барысында жолаушылар өз мүліктеріне жауапты.`;
+    doc.text(termsAndConditions, 20, afterTableY);
+
+    // 6) Генерируем base64 PDF
+    // doc.save(...) в RN не сохранит файл на диск
+    // Нужно manual: datauristring → записать → share
+    const pdfBase64 = doc.output('datauristring'); 
+    // вернёт "data:application/pdf;base64,JVBERi0xLj..."
+
+    // Отделяем base64
+    const base64Data = pdfBase64.split(',')[1];
+
+    // 7) Пишем во временную директорию
+    const fileName = `Dimash_Bus_${item.id}.pdf`;
+    const filePath = `${FileSystem.cacheDirectory}${fileName}`;
+
+    await FileSystem.writeAsStringAsync(filePath, base64Data, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    // 8) Шарим через expo-sharing
+    const canShare = await Sharing.isAvailableAsync();
+    if (canShare) {
+      await Sharing.shareAsync(filePath);
+    } else {
+      Alert.alert('PDF сгенерирован', `Сохранён: ${filePath}`);
+    }
+
+  } catch (error) {
+    console.error("Билетті жүктеу кезінде қате:", error);
+    Alert.alert("Қате", "Құжатты қалыптастыруда қате орын алды. Қайта көріңіз.");
+  }
+}
+export default MyBookingsScreen;
 
 
 
@@ -478,6 +1274,176 @@ const styles = StyleSheet.create({
 
 
 
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\ProfileScreen.js ====
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { axiosInst } from "../service/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const ProfileScreen = () => {
+  const navigation = useNavigation();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem("jwtToken");
+        const storedId = await AsyncStorage.getItem("id");
+        // Если токен или id отсутствуют, перенаправляем на экран входа
+        if (!token || !storedId) {
+          navigation.navigate("Login");
+          return;
+        }
+        // Запрос на получение профиля
+        const res = await axiosInst.get(`/user/${storedId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProfile(res.data);
+      } catch (error) {
+        console.log("Ошибка получения профиля:", error);
+        Alert.alert("Ошибка", "Не удалось загрузить профиль");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigation]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6C2BD9" />
+      </View>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Профиль не найден</Text>
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.title}>Профиль</Text>
+        <View style={styles.profileCard}>
+          <Text style={styles.label}>Имя:</Text>
+          <Text style={styles.value}>{profile.firstName}</Text>
+        </View>
+        <View style={styles.profileCard}>
+          <Text style={styles.label}>Фамилия:</Text>
+          <Text style={styles.value}>{profile.lastName}</Text>
+        </View>
+        <View style={styles.profileCard}>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{profile.email}</Text>
+        </View>
+        <View style={styles.profileCard}>
+          <Text style={styles.label}>Телефон:</Text>
+          <Text style={styles.value}>{profile.mobile}</Text>
+        </View>
+        <View style={styles.profileCard}>
+          <Text style={styles.label}>Возраст:</Text>
+          <Text style={styles.value}>{profile.age}</Text>
+        </View>
+        <View style={styles.profileCard}>
+          <Text style={styles.label}>Пол:</Text>
+          <Text style={styles.value}>{profile.gender}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => navigation.navigate("EditProfile", { profile })}
+        >
+          <Text style={styles.editButtonText}>Редактировать профиль</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fafafa",
+  },
+  scrollContainer: {
+    padding: 24,
+    paddingBottom: 40,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  profileCard: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.07,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+  },
+  label: {
+    fontSize: 16,
+    color: "#555",
+    fontWeight: "600",
+  },
+  value: {
+    fontSize: 16,
+    color: "#222",
+    fontWeight: "500",
+    marginTop: 4,
+  },
+  editButton: {
+    backgroundColor: "#6C2BD9",
+    borderRadius: 28,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  editButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  errorText: {
+    fontSize: 18,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 20,
+  },
+});
+
+export default ProfileScreen;
+
+
+
 ==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\SearchResultScreen.js ====
 import React, { useEffect, useState } from "react";
 import {
@@ -545,7 +1511,7 @@ const RouteCard = ({ bus, passengers, onBook }) => (
       </Text>
       <TouchableOpacity
         style={[styles.bookButton, bus.availableSeats > 0 ? styles.activeBookButton : styles.inactiveBookButton]}
-        onPress={() => bus.availableSeats > 0 && onBook(bus)}
+        onPress={() => onBook(bus)}
         disabled={bus.availableSeats <= 0}
       >
         <Text style={styles.bookButtonText}>Брондау</Text>
@@ -582,9 +1548,10 @@ export default function BusTicketingScreen() {
   };
 
   const handleBookNow = (bus) => {
+    
     navigation.navigate("BusDetail", {
-      id: bus.id
-      /*
+      id: bus.id,
+      
       busNo: bus.busNo,
       from: bus.from,
       to: bus.to,
@@ -594,7 +1561,7 @@ export default function BusTicketingScreen() {
       passengers,
       price: bus.cost,
       availableSeats: bus.availableSeats,
-      */
+      
     });
   };
 
@@ -625,7 +1592,7 @@ export default function BusTicketingScreen() {
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Image
-            source={{ uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/87861c3d98ae6a960d9011197179097ef5e3e27e" }}
+            source={require("../assets/logo.png")}
             style={styles.logo}
           />
         </View>
@@ -865,111 +1832,6 @@ const styles = StyleSheet.create({
 
 
 
-==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\SignupScreen.js ====
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { axiosInst } from '../service/axiosInstance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SafeAreaView } from 'react-native-safe-area-context';  
-
-const SignupScreen = () => {
-  const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSignup = async () => {
-    try {
-      const payload = {
-        fullName: name,
-        phone,
-        email,
-        password,
-      };
-      const response = await axiosInst.post('/user/signup', payload);
-
-      const { jwtToken, userId } = response.data;
-
-      await AsyncStorage.setItem('jwtToken', jwtToken);
-      await AsyncStorage.setItem('userId', userId.toString());
-
-      navigation.replace('Home');
-    } catch (error) {
-      console.error('Signup Error:', error);
-      alert('Error signing up. Please try again.');
-    }
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require('../assets/bus-icon.png')} style={styles.icon} />
-        <Text style={styles.headerText}>Dimash Bus</Text>
-      </View>
-
-      <Text style={styles.title}>SIGNUP</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        onChangeText={setName}
-        value={name}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone number"
-        keyboardType="phone-pad"
-        onChangeText={setPhone}
-        value={phone}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        onChangeText={setEmail}
-        value={email}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        onChangeText={setPassword}
-        value={password}
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign up</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
-  );
-};
-
-export default SignupScreen;
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24 },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 30 },
-  icon: { width: 40, height: 40, marginRight: 10 },
-  headerText: { fontSize: 24, fontWeight: '600' },
-  title: { fontSize: 24, fontWeight: '600', color: '#6B21A8', marginBottom: 20 },
-  input: {
-    borderWidth: 1, borderColor: '#6B21A8', borderRadius: 25,
-    paddingHorizontal: 15, paddingVertical: 10, marginBottom: 15,
-  },
-  button: {
-    backgroundColor: '#6B21A8',
-    paddingVertical: 14,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: { color: '#fff', fontSize: 16 },
-});
-
-
-
 ==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\SplashScreen.js ====
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
@@ -1040,9 +1902,8 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/bus-icon.png')} style={styles.icon} />
-      <Text style={styles.title}>Dimash Bus</Text>
-      <Image source={require('../assets/bus-graphic.jpg')} style={styles.image} />
+      <Image source={require('../assets/logo.png')}  style={styles.icon} />
+      
       <Text style={styles.welcome}>Welcome!</Text>
       <Text style={styles.description}>
         Dimash Bus is an online booking service for bus transportation.
@@ -1066,8 +1927,10 @@ const styles = StyleSheet.create({
     flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', padding: 20
   },
   icon: {
-    width: 50,
-    height: 50,
+    resizeMode : "contain",
+    width: 300,
+    height: 300,
+    marginTop: 1,
   },
   title: {
     fontSize: 28,
@@ -1110,8 +1973,8 @@ const styles = StyleSheet.create({
 
 
 
-==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\busDetail\BusDetailScreen.jsx ====
-import React from 'react';
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\busDetail\BusDetailScreen.js ====
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -1119,184 +1982,563 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+  Alert,
+  TextInput,
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { axiosInst } from "../../service/axiosInstance";
 
-import busImage from '../assets/bus-graphic.jpg'; // большая картинка автобуса
-import backArrow from '../assets/back-arrow.png'; // ← кнопка назад
+import busImage from "../../assets/bus9.png";
+import logo from "../../assets/logo.png";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const BusDetailsScreen = () => {
+export default function BusDetailsScreen() {
   const navigation = useNavigation();
   const route = useRoute();
 
+  // Из предыдущего экрана
   const {
-    busNo
-  } = route.params;
+    id,                   // ID автобуса
+    passengers = 1,       // Сколько пассажиров максимум
+    price = 500,          // Цена за 1 место, если нужно
+  } = route.params || {};
 
-  const selectedSeats = [8, 9]; // можно будет получать из выбора
+  // Данные об автобусе
+  const [busNo, setBusNo] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [date, setDate] = useState(""); 
+  const [totalSeats, setTotalSeats] = useState(41);
 
-  const handleContinue = () => {
-    navigation.navigate('BookingSummary', {
-      ...route.params,
+  // Набор занятых (или временно заблокированных) мест
+  const [bookedSeats, setBookedSeats] = useState([]);
+  // Места, выбранные пользователем
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  // Данные пассажиров для каждого выбранного места
+  // [{ seatNumber, firstName, lastName, age, gender }, ... ]
+  const [passengerDetails, setPassengerDetails] = useState([]);
+
+  // --- Запрос: /seats/bus/:id ---
+  const fetchBusById = async () => {
+    try {
+      const res = await axiosInst.get(`/seats/bus/${id}`);
+      const data = res.data;
+      setBusNo(data.busNo);
+      setFrom(data.from);
+      setTo(data.to);
+      setStartTime(data.startTime);
+      setEndTime(data.endTime);
+      setTotalSeats(data.totalSeats || 41);
+      setBookedSeats(data.bookedSeats || []);
+      // Если нужно, можно вычислить date = data.startTime.split("T")[0], и т.п.
+    } catch (error) {
+      console.error("Error fetchBusById:", error);
+      Alert.alert("Ошибка", "Не удалось получить детали автобуса");
+    }
+  };
+
+  // --- Запрос: /seat/:id (получение временно заблокированных мест) ---
+  const fetchSeatsSecondDb = async () => {
+    try {
+      const res = await axiosInst.get(`/seat/${id}`);
+      // res.data = массив, например [11, 12]
+      const concurrencySeats = res.data;
+      // Объединяем с bookedSeats
+      setBookedSeats((prev) => Array.from(new Set([...prev, ...concurrencySeats])));
+    } catch (error) {
+      console.error("Error fetchSeatsSecondDb:", error);
+    }
+  };
+
+  // При монтировании
+  useEffect(() => {
+    fetchBusById();
+    fetchSeatsSecondDb();
+  }, []);
+
+  // Форматируем время (ч:м)
+  const formatTime = (timeString) => {
+    if (!timeString) return "";
+    const d = new Date(timeString);
+    return d.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+
+  // --- Логика нажатия на место ---
+  const handleSeatPress = (seatNumber) => {
+    // Если уже занято => игнорируем
+    if (bookedSeats.includes(seatNumber)) return;
+
+    // Если оно уже выбрано => убираем из выбранных
+    if (selectedSeats.includes(seatNumber)) {
+      setSelectedSeats((prev) => prev.filter((s) => s !== seatNumber));
+      // Удаляем из passengerDetails
+      setPassengerDetails((prev) => prev.filter((p) => p.seatNumber !== seatNumber));
+    } else {
+      // Иначе проверим лимит (passengers)
+      if (selectedSeats.length < passengers) {
+        setSelectedSeats((prev) => [...prev, seatNumber]);
+        // Создаём пустую запись для пассажира
+        setPassengerDetails((prev) => [
+          ...prev,
+          {
+            seatNumber,
+            firstName: "",
+            lastName: "",
+            age: "",
+            gender: "",
+          },
+        ]);
+      } else {
+        Alert.alert("Предупреждение", `Максимум ${passengers} мест.`);
+      }
+    }
+  };
+
+  // Изменение поля одного пассажира
+  const updatePassengerField = (seatNumber, field, value) => {
+    setPassengerDetails((prev) =>
+      prev.map((p) =>
+        p.seatNumber === seatNumber ? { ...p, [field]: value } : p
+      )
+    );
+  };
+
+  // Рендер одного «квадратика» кресла
+  const renderSeat = (seatNumber) => {
+    const isBooked = bookedSeats.includes(seatNumber);
+    const isSelected = selectedSeats.includes(seatNumber);
+
+    let bgColor = "#ccc"; 
+    if (isBooked) {
+      bgColor = "#e53935"; // красный
+    } else if (isSelected) {
+      bgColor = "#6C2BD9"; // фиолетовый
+    }
+
+    return (
+      <TouchableOpacity
+        key={seatNumber}
+        style={[styles.seat, { backgroundColor: bgColor }]}
+        onPress={() => handleSeatPress(seatNumber)}
+        disabled={isBooked}
+      >
+        <MaterialCommunityIcons name="seat-outline" size={14} color="#fff" />
+        <Text style={styles.seatNumber}>{seatNumber}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  // Формируем колонки: 1..10, 11..20, 21 alone, 22..31, 32..41
+  const col1 = [];
+  for (let i = 1; i <= 10; i++) col1.push(renderSeat(i));
+  const col2 = [];
+  for (let i = 11; i <= 20; i++) col2.push(renderSeat(i));
+  const col3 = [renderSeat(21)]; // "одинокое" место
+  const col4 = [];
+  for (let i = 22; i <= 31; i++) col4.push(renderSeat(i));
+  const col5 = [];
+  for (let i = 32; i <= 41; i++) col5.push(renderSeat(i));
+
+  // --- Кнопка "Брондау" ---
+  const handleBook = () => {
+    // Проверим заполненность формы пассажиров
+    for (const passenger of passengerDetails) {
+      if (!passenger.firstName || !passenger.lastName || !passenger.age) {
+        Alert.alert("Ошибка", "Заполните все поля пассажиров (имя, фамилию, возраст).");
+        return;
+      }
+    }
+    // Всё ок
+    navigation.navigate("BookingSummary", {
+      busId:id,
+      busNo,
+      from,
+      to,
+      startTime,
+      endTime,
+      date,
+      passengers,
+      price,
       selectedSeats,
+      passengerDetails,
     });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Back and bus image */}
-      <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-        <Image source={backArrow} style={styles.backIcon} />
-      </TouchableOpacity>
-
-      <Image source={busImage} style={styles.busImage} resizeMode="contain" />
-
-      {/* Bus number */}
-      <Text style={styles.busNo}>{busNo}</Text>
-
-      {/* Date */}
-      <Text style={styles.dateText}>{date}</Text>
-
-      {/* Direction Info */}
-      <View style={styles.routeBox}>
-        <View style={styles.routeText}>
-          <Text style={styles.location}>{from}</Text>
-          <Text style={styles.time}>{fromTime}</Text>
+    <SafeAreaView style={styles.rootContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Шапка */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.backButtonText}>←</Text>
+          </TouchableOpacity>
+          <Image source={logo} style={styles.logo} />
         </View>
 
-        <Text style={styles.arrow}>◉──────────◉</Text>
+        {/* Картинка автобуса */}
+        <Image source={busImage} style={styles.busImage} />
+        <Text style={styles.busNo}>{busNo}</Text>
+        {date ? <Text style={styles.dateText}>{date}</Text> : null}
 
-        <View style={styles.routeText}>
-          <Text style={styles.location}>{to}</Text>
-          <Text style={styles.time}>{toTime}</Text>
+        {/* Инфа "откуда-куда" */}
+        <View style={styles.routeBox}>
+          <View style={styles.routeRow}>
+            <Text style={styles.placeText}>{from}</Text>
+            <Text style={styles.timeText}>{formatTime(startTime)}</Text>
+          </View>
+          <Text style={styles.arrow}>◉──────────◉</Text>
+          <View style={styles.routeRow}>
+            <Text style={styles.placeText}>{to}</Text>
+            <Text style={styles.timeText}>{formatTime(endTime)}</Text>
+          </View>
         </View>
-      </View>
 
-      {/* Seat & Facilities */}
-      <View style={styles.infoBox}>
-        <Text style={styles.sectionTitle}>Available Seats</Text>
-        <Text style={styles.infoText}>12 seats available</Text>
-        <Text style={styles.infoText}>2*2 Seat Arrangement</Text>
+        {/* Блок выбора мест */}
+        <View style={styles.seatsBlock}>
+          <Text style={styles.seatsBlockTitle}>Орын таңдаңыз</Text>
+          <View style={styles.columnsWrapper}>
+            <View style={styles.column}>{col1}</View>
+            <View style={styles.column}>{col2}</View>
+            <View style={styles.columnCenter}>{col3}</View>
+            <View style={styles.column}>{col4}</View>
+            <View style={styles.column}>{col5}</View>
+          </View>
 
-        <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Facility</Text>
-        <Text style={styles.infoText}>- Comfort Seats</Text>
-        <Text style={styles.infoText}>- On Time</Text>
-        <Text style={styles.infoText}>- Storage Space</Text>
-      </View>
+          {/* Легенда */}
+          <View style={styles.legend}>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendBox, { backgroundColor: "#ccc" }]} />
+              <Text>Свободно</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendBox, { backgroundColor: "#e53935" }]} />
+              <Text>Занято</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendBox, { backgroundColor: "#6C2BD9" }]} />
+              <Text>Выбрано</Text>
+            </View>
+          </View>
 
-      {/* Price & Book */}
-      <View style={styles.footer}>
-        <Text style={styles.priceText}>
-          {passengers} * {price} ={' '}
-          <Text style={styles.totalPrice}>{passengers * price} KZT</Text>
-        </Text>
+          {/* Информация о выбранных местах */}
+          {selectedSeats.length > 0 && (
+            <View style={styles.selectedSeatsInfo}>
+              <Text style={styles.infoText}>
+                Места: {selectedSeats.join(", ")}
+              </Text>
+              <Text style={styles.infoText}>
+                Сумма: {selectedSeats.length * price} KZT
+              </Text>
+            </View>
+          )}
+        </View>
 
-        <TouchableOpacity style={styles.bookBtn} onPress={handleContinue}>
-          <Text style={styles.bookBtnText}>Book Now</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        {/* Блок с формами для пассажиров */}
+        {selectedSeats.length > 0 && (
+          <View style={styles.passengerInfo}>
+            <Text style={styles.passengerInfoTitle}>
+              Данные пассажиров
+            </Text>
+            
+            {passengerDetails.map((p) => (
+              <View style={styles.passengerCard} key={p.seatNumber}>
+                {/* Заголовок карточки */}
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardHeaderText}>
+                    Место №{p.seatNumber}
+                  </Text>
+                </View>
+
+                {/* Поля ввода: расположим в 2 ряда */}
+                <View style={styles.inputRow}>
+                  <TextInput
+                    style={[styles.inputField, { flex: 1 }]}
+                    placeholder="Имя"
+                    value={p.firstName}
+                    onChangeText={(val) =>
+                      updatePassengerField(p.seatNumber, "firstName", val)
+                    }
+                  />
+                  <View style={{ width: 12 }} />
+                  <TextInput
+                    style={[styles.inputField, { flex: 1 }]}
+                    placeholder="Фамилия"
+                    value={p.lastName}
+                    onChangeText={(val) =>
+                      updatePassengerField(p.seatNumber, "lastName", val)
+                    }
+                  />
+                </View>
+
+                <View style={styles.inputRow}>
+                  <TextInput
+                    style={[styles.inputField, { flex: 1 }]}
+                    placeholder="Возраст"
+                    keyboardType="numeric"
+                    value={String(p.age)}
+                    onChangeText={(val) =>
+                      updatePassengerField(p.seatNumber, "age", val)
+                    }
+                  />
+                  <View style={{ width: 12 }} />
+                  <TextInput
+                    style={[styles.inputField, { flex: 1 }]}
+                    placeholder="Пол (M/F)"
+                    value={p.gender}
+                    onChangeText={(val) =>
+                      updatePassengerField(p.seatNumber, "gender", val)
+                    }
+                  />
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+
+        {/* Кнопка "Брондау" */}
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.bookBtn} onPress={handleBook}>
+            <Text style={styles.bookBtnText}>Брондау</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
-};
+}
 
-export default BusDetailsScreen;
-
+// Стили оформления:
 const styles = StyleSheet.create({
-  container: {
+  rootContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollContainer: {
     padding: 20,
-    backgroundColor: '#fff',
     paddingBottom: 60,
   },
-  backBtn: {
+
+  // Шапка
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
-  backIcon: {
-    width: 24,
-    height: 24,
-    tintColor: '#6C2BD9',
+  backButton: {
+    marginRight: 10,
   },
+  backButtonText: {
+    color: "#693BB8",
+    fontSize: 36,
+  },
+  logo: {
+    width: 150,
+    height: 60,
+    resizeMode: "contain",
+  },
+
+  // Картинка автобуса
   busImage: {
-    width: '100%',
+    width: "100%",
     height: 120,
     marginVertical: 10,
+    resizeMode: "contain",
   },
   busNo: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#fff',
-    backgroundColor: '#6C2BD9',
+    fontWeight: "700",
+    color: "#fff",
+    backgroundColor: "#6C2BD9",
     paddingVertical: 6,
-    textAlign: 'center',
+    textAlign: "center",
     borderRadius: 20,
+    marginVertical: 4,
   },
   dateText: {
+    textAlign: "center",
+    color: "#888",
     fontSize: 14,
-    color: '#888',
-    marginTop: 6,
-    textAlign: 'center',
+    marginBottom: 8,
   },
+
+  // Блок инфы "откуда-куда"
   routeBox: {
-    backgroundColor: '#f8f8f8',
-    padding: 16,
+    backgroundColor: "#f8f8f8",
     borderRadius: 12,
-    marginTop: 16,
+    padding: 16,
+    marginBottom: 16,
   },
-  routeText: {
-    alignItems: 'center',
-    marginBottom: 12,
+  routeRow: {
+    alignItems: "center",
+    marginBottom: 8,
   },
-  location: {
+  placeText: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#6C2BD9',
+    fontWeight: "600",
+    color: "#6C2BD9",
   },
-  time: {
+  timeText: {
     fontSize: 16,
-    fontWeight: '500',
     marginTop: 2,
+    color: "#333",
   },
   arrow: {
+    textAlign: "center",
+    color: "#444",
+    marginBottom: 8,
     fontSize: 20,
-    textAlign: 'center',
-    marginVertical: 8,
-    color: '#444',
   },
-  infoBox: {
-    marginTop: 20,
+
+  // Блок с местами
+  seatsBlock: {
+    backgroundColor: "#F8F8F8",
+    borderRadius: 12,
+    padding: 16,
   },
-  sectionTitle: {
+  seatsBlockTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
+    marginBottom: 12,
+  },
+  columnsWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+  column: {
+    flexDirection: "column",
+    alignItems: "center",
+    marginHorizontal: 4,
+  },
+  columnCenter: {
+    flexDirection: "column-reverse",
+    alignItems: "center",
+    marginHorizontal: 4,
+  },
+  seat: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    marginVertical: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  seatNumber: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#fff",
+    marginTop: 2,
+  },
+
+  legend: {
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  legendItem: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 6,
+  },
+  legendBox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    marginRight: 6,
+  },
+
+  selectedSeatsInfo: {
+    marginTop: 8,
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 8,
   },
   infoText: {
     fontSize: 14,
-    marginLeft: 8,
-    marginBottom: 4,
+    color: "#333",
   },
-  footer: {
-    marginTop: 30,
-    alignItems: 'center',
+
+  // Блок "Информация о пассажирах"
+  passengerInfo: {
+    marginTop: 20,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    padding: 16,
   },
-  priceText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  totalPrice: {
-    color: '#6C2BD9',
+  passengerInfoTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
+    marginBottom: 12,
+    color: "#333",
+  },
+  passengerCard: {
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+
+    // Для красоты можно добавить тень (только на iOS)
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    // Для Android тень через elevation
+    elevation: 2,
+  },
+  passengerSeat: {
+    fontWeight: "600",
+    marginBottom: 6,
+    color: "#333",
+  },
+  cardHeader: {
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderColor: "#ddd",
+    paddingBottom: 4,
+  },
+  cardHeaderText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#51259B",
+  },
+  inputRow: {
+    flexDirection: "row",
+    marginTop: 10,
+  },
+  inputField: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 14,
+
+    // Чтобы текст не налипал на верхний край
+    // можно добавить textAlignVertical: "center"
+    // но оно не всегда нужно
+  },
+
+  // Кнопка "Брондау"
+  footer: {
+    marginTop: 20,
+    alignItems: "center",
   },
   bookBtn: {
-    backgroundColor: '#6C2BD9',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    backgroundColor: "#6C2BD9",
     borderRadius: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
   },
   bookBtnText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
     fontSize: 16,
+    fontWeight: "600",
   },
 });
 
@@ -1759,7 +3001,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });***/} 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import {
   View,
   Text,
@@ -1770,6 +3012,7 @@ import {
   Alert,
   Platform,
   TextInput,
+  Easing, Animated
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -1778,11 +3021,17 @@ import styles from "./styles";
 import { axiosInst } from "../../service/axiosInstance";
 import { useNavigation } from "@react-navigation/native";
 import FormField from "./FormField";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Modal from "react-native-modal";
+import Icon from 'react-native-vector-icons/Feather';
+
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const translateX = useRef(new Animated.Value(500)).current;
 
   const [stationList, setStationList] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const [from, setFrom] = useState(null);
   const [to, setTo] = useState(null);
@@ -1794,6 +3043,16 @@ const HomeScreen = () => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  useEffect(() => {
+    Animated.timing(translateX, {
+      toValue: 12,
+      duration: 3000,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  
   const fetchStations = async () => {
     try {
       const response = await axiosInst.get("/station/getstations");
@@ -1825,12 +3084,13 @@ const HomeScreen = () => {
     }
 
     try {
+      //Alert.alert("Info", `Searching for buses from ${from} to ${to} on ${date}`);
+
       const requestBody = {
         from,
         to,
         date: date.toISOString().split("T")[0],
       };
-
       const response = await axiosInst.post("/bus/getbuses", requestBody);
 
       if (response.data.length === 0) {
@@ -1856,30 +3116,91 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.inputDesign.container}>
+    <SafeAreaView style={styles.inputDesign.container}>
+
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        marginBottom: 10,
+      }}>
+        <Image
+          source={require('../../assets/logo.png')}
+          style={{ width: 160, height: 60, resizeMode: 'contain' }}
+        />
+        <TouchableOpacity onPress={() => setMenuVisible(true)}>
+          <Icon name="menu" size={50} color="#6B21A8" />
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        isVisible={menuVisible}
+        onBackdropPress={() => setMenuVisible(false)}
+        animationIn="slideInRight"
+        animationOut="slideOutRight"
+        backdropOpacity={0.3}
+        style={{ margin: 0, justifyContent: 'flex-start', alignItems: 'flex-end' }}
+      >
+        <View style={{
+          width: 250,
+          height: '100%',
+          backgroundColor: '#fff',
+          paddingTop: 60,
+          paddingHorizontal: 20,
+          borderTopLeftRadius: 20,
+          borderBottomLeftRadius: 20,
+          shadowColor: "#000",
+          shadowOffset: { width: -4, height: 0 },
+          shadowOpacity: 0.15,
+          shadowRadius: 8,
+          elevation: 8,
+        }}>
+          <TouchableOpacity
+            onPress={() => { setMenuVisible(false); navigation.navigate("Profile"); }}
+            style={{ paddingVertical: 12 }}
+          >
+            <Text style={{ fontSize: 18, color: '#111' }}>👤 Профиль</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => { setMenuVisible(false); navigation.navigate("MyBookings"); }}
+            style={{ paddingVertical: 12 }}
+          >
+            <Text style={{ fontSize: 18, color: '#111' }}>🎟 Менің билеттерім</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setMenuVisible(false)}
+            style={{ paddingVertical: 12 }}
+          >
+            <Text style={{ fontSize: 18, color: 'red' }}>❌ Жабу</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+
+
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         <View style={styles.inputDesign.contentContainer}>
-          <Image
-            source={{
-              uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/e091fec5c4eed24f793836fbe8901082aee55a25",
-            }}
-            style={styles.inputDesign.logo}
-          />
+        
 
           <Text style={styles.inputDesign.greeting}>
-            Hello, Test. Looking for a bus?
+            Сәлем. Автобус іздеп жүрсіз бе?
           </Text>
 
-          <Image
-            source={{
-              uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/6eef6d95fbad99a7eae867a2e51523bd9831cdee",
-            }}
-            style={styles.inputDesign.busImage}
+          <Animated.Image
+            source={require('../../assets/bus5.png')}
+            style={[
+              styles.inputDesign.busImage,
+              { transform: [{ translateX }] }
+            ]}
           />
+
         
           <View style={styles.inputDesign.formContainer}>
               
@@ -1974,8 +3295,8 @@ const HomeScreen = () => {
         </View>
       </ScrollView>
 
-      <BottomNavigation />
-    </View>
+      
+    </SafeAreaView>
   );
 };
 
@@ -2452,7 +3773,7 @@ const LoginScreen = () => {
     <View style={styles.header}>
       <BackButton />
       <Image
-        source={require("../../assets/bus-icon.png")}
+        source={require("../../assets/logo.png")}
         style={styles.logo}
         resizeMode="contain"
         accessibilityLabel="Dimash Bus"
@@ -2477,12 +3798,14 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito, sans-serif",
     width: "100%", },
   header: {
+    flexDirection: 'row',
     display: "flex",
     alignItems: "center",
     padding: 24,
     gap: 12, },
 
     logo: {
+      alignSelf: "flex-start",
       width: 277,
       height: 65,
     },
@@ -2569,17 +3892,225 @@ const styles = StyleSheet.create({
     </View>***/}
 
 
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\signup\SignupForm.jsx ====
+// SignupForm.jsx
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { axiosInst } from "../../service/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// ВАЖНО: используем поля, аналогичные фронтовой регистрации:
+// firstName, lastName, gender, age, mobilenumber, email, password
+const SignupForm = () => {
+  const navigation = useNavigation();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
+  const [age, setAge] = useState("");
+  const [mobilenumber, setMobilenumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignup = async () => {
+    try {
+      const payload = {
+        firstName,
+        lastName,
+        gender,
+        age,
+        mobile: mobilenumber,
+        email,
+        password,
+      };
+
+      const response = await axiosInst.post("/user/signup", payload);
+
+
+      navigation.replace("Login");
+    } catch (error) {
+      console.error("Signup Error:", error);
+      alert("Error signing up. Please try again.");
+    }
+  };
+
+  return (
+    <View style={styles.formContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Gender"
+        value={gender}
+        onChangeText={setGender}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Age"
+        keyboardType="numeric"
+        value={age}
+        onChangeText={setAge}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Mobile Number"
+        keyboardType="phone-pad"
+        value={mobilenumber}
+        onChangeText={setMobilenumber}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <Text style={styles.buttonText}>Sign up</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default SignupForm;
+
+const styles = StyleSheet.create({
+  formContainer: {
+    width: "100%",
+    maxWidth: 295,
+    alignSelf: "center",
+    marginTop: 20,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#6B21A8",
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: "#6B21A8",
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
+
+
+
+==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\screens\signup\SignupScreen.js ====
+// SignupScreen.jsx
+import React from "react";
+import { View, Image, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import BackButton from "../../components/BackButton";
+import SignupForm from "./SignupForm";            // <-- Подключаем наш SignupForm
+import GoogleLoginButton from "../login/GoogleLoginButton"; // <-- Если нужен Google вход (как в LoginScreen)
+
+const SignupScreen = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header: BackButton + логотип */}
+      <View style={styles.header}>
+        <BackButton />
+        <Image
+          source={require("../../assets/logo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+          accessibilityLabel="Dimash Bus"
+        />
+      </View>
+
+      {/* Контейнер для формы и Google-кнопки */}
+      <View style={styles.content}>
+        <SignupForm />
+        <View style={styles.googleButtonContainer}>
+          <GoogleLoginButton />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default SignupScreen;
+
+const styles = StyleSheet.create({
+  container: { 
+    flex: 1,
+    flexDirection: "column",
+    fontFamily: "Nunito, sans-serif",
+    width: "100%",
+  },
+  header: {
+    flexDirection: "row",
+    display: "flex",
+    alignItems: "center",
+    padding: 24,
+    gap: 12,
+  },
+  logo: {
+    alignSelf: "flex-start",
+    width: 277,
+    height: 65,
+  },
+  content: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingLeft: 24,
+    paddingRight: 24,
+  },
+  googleButtonContainer: {
+    marginTop: 40,
+    width: "100%",
+    maxWidth: 295,
+    alignSelf: "center",
+  },
+});
+
+
+
 ==== C:\Users\Admin\Desktop\buuss\test3\bus-booking-mobile\service\axiosInstance.js ====
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosInst = axios.create({
-  baseURL: 'https\:\/\/ff40-176-64-26-145.ngrok-free\.ngrok-free\.app',
+  baseURL: 'https\:\/\/7174-85-117-103-170\.ngrok-free\.app',
   timeout: 10000,
 });
 
+
 axiosInst.interceptors.request.use(
   async (config) => {
+    if (config.url.includes('/user/signin') || config.url.includes('/user/signup')) {
+      return config; // не добавлять токен при логине
+    }
     const token = await AsyncStorage.getItem('jwtToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -2588,6 +4119,7 @@ axiosInst.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
 
 export { axiosInst };
 

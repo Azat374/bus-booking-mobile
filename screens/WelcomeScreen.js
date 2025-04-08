@@ -1,26 +1,31 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+
 
 const WelcomeScreen = () => {
   const navigation = useNavigation();
-
+  const { t, i18n } = useTranslation();
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo.png')}  style={styles.icon} />
       
-      <Text style={styles.welcome}>Welcome!</Text>
+      <Text style={styles.welcome}>{t('welcomeScreen.welcome')}</Text>
       <Text style={styles.description}>
-        Dimash Bus is an online booking service for bus transportation.
+        {t('welcomeScreen.description')}
       </Text>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <Text style={styles.buttonText}>{t('welcomeScreen.login')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.buttonText}>SIGNUP</Text>
+          <Text style={styles.buttonText}>{t('welcomeScreen.signup')}</Text>
         </TouchableOpacity>
       </View>
+      <Button title="EN" onPress={() => i18n.changeLanguage('en')} />
+      <Button title="RU" onPress={() => i18n.changeLanguage('ru')} />
+      <Button title="KZ" onPress={() => i18n.changeLanguage('kk')} />
     </View>
   );
 };

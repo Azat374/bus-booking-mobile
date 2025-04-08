@@ -1,0 +1,91 @@
+{
+    "profile": "👤 Profile",
+    "myBookings": "🎟 My Bookings",
+    "logout": "❌ Logout",
+    "language": "Language",
+    "welcomeScreen": {
+        "welcome": "Welcome!",
+        "description": "Dimash Bus is an online booking service for bus transportation.",
+        "login": "LOGIN",
+        "signup": "SIGNUP"
+    },
+    "loginScreen": {
+        "title": "Login",
+        "email": "Email",
+        "password": "Password",
+        "loginButton": "Login",
+        "loginWithGoogle": "Login with Google",
+        "invalidCredentials": "Invalid email or password!"
+    },
+    "signupScreen": {
+        "title": "Sign Up",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "gender": "Gender",
+        "age": "Age",
+        "mobile": "Mobile Number",
+        "email": "Email",
+        "password": "Password",
+        "signupButton": "Sign Up",
+        "signupError": "Error signing up. Please try again."
+    },
+    "homeScreen": {
+        "greeting": "Hello. Are you looking for a bus?",
+        "search": "Search",
+        "from": "From",
+        "to": "To",
+        "passengers": "Passengers",
+        "date": "Date"
+    },
+    "searchResultScreen": {
+        "noBusesFound": "No buses found",
+        "bookNow": "Book Now",
+        "available": "Available",
+        "booked": "Booked",
+        "selected": "Selected",
+        "price": "Price",
+        "seat": "Seat"
+    },
+    "busDetailsScreen": {
+        "chooseSeats": "Choose a seat",
+        "free": "Available",
+        "booked": "Booked",
+        "selected": "Selected",
+        "passengerInfo": "Passenger Information",
+        "seatNumber": "Seat",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "age": "Age",
+        "gender": "Gender (M/F)",
+        "book": "Book",
+        "fillAllFields": "Please fill all passenger fields (name, surname, age).",
+        "totalPrice": "Total Price"
+    },
+    "bookingPaymentScreen": {
+        "title": "Booking and Payment",
+        "bookingSummary": "Booking Summary",
+        "bus": "Bus:",
+        "seats": "Seats:",
+        "total": "Total:",
+        "perSeat": "Price per seat:",
+        "proceedToPayment": "Proceed to Payment",
+        "payment": "Payment",
+        "paymentAmount": "Amount to Pay:",
+        "goBack": "← Back to Summary"
+    },
+    "profileScreen": {
+        "profile": "Profile",
+        "editProfile": "Edit Profile",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "mobile": "Mobile Number",
+        "age": "Age",
+        "gender": "Gender",
+        "profileNotFound": "Profile not found"
+    },
+    "common": {
+        "error": "Error",
+        "success": "Success"
+    }
+}

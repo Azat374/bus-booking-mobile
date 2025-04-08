@@ -16,11 +16,11 @@ import { axiosInst } from "../../service/axiosInstance";
 import busImage from "../../assets/bus9.png";
 import logo from "../../assets/logo.png";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useTranslation } from "react-i18next";
 export default function BusDetailsScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-
+  const { t } = useTranslation();
   // Из предыдущего экрана
   const {
     id,                   // ID автобуса
@@ -226,7 +226,7 @@ export default function BusDetailsScreen() {
 
         {/* Блок выбора мест */}
         <View style={styles.seatsBlock}>
-          <Text style={styles.seatsBlockTitle}>Орын таңдаңыз</Text>
+          <Text style={styles.seatsBlockTitle}>{t("busDetailsScreen.chooseSeats")}</Text>
           <View style={styles.columnsWrapper}>
             <View style={styles.column}>{col1}</View>
             <View style={styles.column}>{col2}</View>
@@ -239,15 +239,15 @@ export default function BusDetailsScreen() {
           <View style={styles.legend}>
             <View style={styles.legendItem}>
               <View style={[styles.legendBox, { backgroundColor: "#ccc" }]} />
-              <Text>Свободно</Text>
+              <Text>{t("busDetailsScreen.free")}</Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendBox, { backgroundColor: "#e53935" }]} />
-              <Text>Занято</Text>
+              <Text>{t("busDetailsScreen.booked")}</Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendBox, { backgroundColor: "#6C2BD9" }]} />
-              <Text>Выбрано</Text>
+              <Text>{t("busDetailsScreen.selected")}</Text>
             </View>
           </View>
 
@@ -255,10 +255,10 @@ export default function BusDetailsScreen() {
           {selectedSeats.length > 0 && (
             <View style={styles.selectedSeatsInfo}>
               <Text style={styles.infoText}>
-                Места: {selectedSeats.join(", ")}
+                {t("busDetailsScreen.seatNumber")}: {selectedSeats.join(", ")}
               </Text>
               <Text style={styles.infoText}>
-                Сумма: {selectedSeats.length * price} KZT
+                {t("busDetailsScreen.totalPrice")}: {selectedSeats.length * price} KZT
               </Text>
             </View>
           )}
@@ -268,7 +268,7 @@ export default function BusDetailsScreen() {
         {selectedSeats.length > 0 && (
           <View style={styles.passengerInfo}>
             <Text style={styles.passengerInfoTitle}>
-              Данные пассажиров
+              {t("busDetailsScreen.passengerInfo")}
             </Text>
             
             {passengerDetails.map((p) => (
@@ -276,7 +276,7 @@ export default function BusDetailsScreen() {
                 {/* Заголовок карточки */}
                 <View style={styles.cardHeader}>
                   <Text style={styles.cardHeaderText}>
-                    Место №{p.seatNumber}
+                    {t("busDetailsScreen.seatNumber")} №{p.seatNumber}
                   </Text>
                 </View>
 
@@ -284,7 +284,7 @@ export default function BusDetailsScreen() {
                 <View style={styles.inputRow}>
                   <TextInput
                     style={[styles.inputField, { flex: 1 }]}
-                    placeholder="Имя"
+                    placeholder={t("busDetailsScreen.firstName")}
                     value={p.firstName}
                     onChangeText={(val) =>
                       updatePassengerField(p.seatNumber, "firstName", val)
@@ -293,7 +293,7 @@ export default function BusDetailsScreen() {
                   <View style={{ width: 12 }} />
                   <TextInput
                     style={[styles.inputField, { flex: 1 }]}
-                    placeholder="Фамилия"
+                    placeholder={t("busDetailsScreen.lastName")}
                     value={p.lastName}
                     onChangeText={(val) =>
                       updatePassengerField(p.seatNumber, "lastName", val)
@@ -304,7 +304,7 @@ export default function BusDetailsScreen() {
                 <View style={styles.inputRow}>
                   <TextInput
                     style={[styles.inputField, { flex: 1 }]}
-                    placeholder="Возраст"
+                    placeholder={t("busDetailsScreen.age")}
                     keyboardType="numeric"
                     value={String(p.age)}
                     onChangeText={(val) =>
@@ -314,7 +314,7 @@ export default function BusDetailsScreen() {
                   <View style={{ width: 12 }} />
                   <TextInput
                     style={[styles.inputField, { flex: 1 }]}
-                    placeholder="Пол (M/F)"
+                    placeholder={t("busDetailsScreen.gender")}
                     value={p.gender}
                     onChangeText={(val) =>
                       updatePassengerField(p.seatNumber, "gender", val)
@@ -330,7 +330,7 @@ export default function BusDetailsScreen() {
         {/* Кнопка "Брондау" */}
         <View style={styles.footer}>
           <TouchableOpacity style={styles.bookBtn} onPress={handleBook}>
-            <Text style={styles.bookBtnText}>Брондау</Text>
+            <Text style={styles.bookBtnText}>{t("busDetailsScreen.book")}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

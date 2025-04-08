@@ -406,7 +406,7 @@ import FormField from "./FormField";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Feather';
-
+import {useTranslation} from 'react-i18next';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const translateX = useRef(new Animated.Value(500)).current;
@@ -424,7 +424,7 @@ const HomeScreen = () => {
   const [openTo, setOpenTo] = useState(false);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
-
+  const { t, i18n } = useTranslation();
   useEffect(() => {
     Animated.timing(translateX, {
       toValue: 12,
@@ -542,22 +542,35 @@ const HomeScreen = () => {
             onPress={() => { setMenuVisible(false); navigation.navigate("Profile"); }}
             style={{ paddingVertical: 12 }}
           >
-            <Text style={{ fontSize: 18, color: '#111' }}>👤 Профиль</Text>
+            <Text style={{ fontSize: 18, color: '#111' }}>{t('profile')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => { setMenuVisible(false); navigation.navigate("MyBookings"); }}
             style={{ paddingVertical: 12 }}
           >
-            <Text style={{ fontSize: 18, color: '#111' }}>🎟 Менің билеттерім</Text>
+            <Text style={{ fontSize: 18, color: '#111' }}>{t('myBookings')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => setMenuVisible(false)}
             style={{ paddingVertical: 12 }}
           >
-            <Text style={{ fontSize: 18, color: 'red' }}>❌ Жабу</Text>
+            <Text style={{ fontSize: 18, color: 'red' }}>{t('logout')}</Text>
           </TouchableOpacity>
+
+          <View style={{ marginTop: 20 }}>
+            <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>🌐 {t('language')} </Text>
+            <TouchableOpacity onPress={() => i18n.changeLanguage('kk')}>
+              <Text style={{ fontSize: 16 }}>Қазақша</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => i18n.changeLanguage('ru')}>
+              <Text style={{ fontSize: 16 }}>Русский</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => i18n.changeLanguage('en')}>
+              <Text style={{ fontSize: 16 }}>English</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 
@@ -572,7 +585,7 @@ const HomeScreen = () => {
         
 
           <Text style={styles.inputDesign.greeting}>
-            Сәлем. Автобус іздеп жүрсіз бе?
+            {t("homeScreen.greeting")}
           </Text>
 
           <Animated.Image
@@ -593,14 +606,14 @@ const HomeScreen = () => {
               accessibilityLabel={"Location icon"}
             />
             <View>
-              <Text style={styles.formField.label}>{"Қайдан"}</Text>
+              <Text style={styles.formField.label}>{t("homeScreen.from")}</Text>
                 <DropDownPicker
                 open={openFrom}
                 setOpen={setOpenFrom}
                 items={stationList}
                 value={from}
                 setValue={setFrom}
-                placeholder="From"
+                placeholder={t("homeScreen.from")}
                 zIndex={2000}
                 style={styles.formField.value}
               />
@@ -617,14 +630,14 @@ const HomeScreen = () => {
               accessibilityLabel={"Select icon"}
             />
             <View>
-              <Text style={styles.formField.label}>{"Қайда"}</Text>
+              <Text style={styles.formField.label}>{t("homeScreen.to")}</Text>
               <DropDownPicker
               open={openTo}
               setOpen={setOpenTo}
               items={stationList.filter((item) => item.value !== from)}
               value={to}
               setValue={setTo}
-              placeholder="To"
+              placeholder={t("homeScreen.to")}
               zIndex={1000}
               style={{ marginBottom: 15 }}
             />
@@ -640,7 +653,7 @@ const HomeScreen = () => {
                 accessibilityLabel={"Users icon"}
               />
               <View>
-                <Text style={styles.formField.label}>{"Жолаушы саны"}</Text>
+                <Text style={styles.formField.label}>{t("homeScreen.passengers")}</Text>
                 <TextInput style={styles.formField.value}  onChangeText={setPassengers} value={passengers}>{''}</TextInput>
                 <View style={styles.formField.separator} />
               </View>
@@ -653,7 +666,7 @@ const HomeScreen = () => {
                 accessibilityLabel={"Calendar icon"}
               />
               <View>
-                <Text style={styles.formField.label}>{"Күн"}</Text>
+                <Text style={styles.formField.label}>{t("homeScreen.date")}</Text>
                 <DateTimePicker
                 value={date}
                 mode="date"

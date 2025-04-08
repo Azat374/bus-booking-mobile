@@ -18,11 +18,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { axiosInst } from "../service/axiosInstance"; // Ваш Axios инстанс
 import logo from "../assets/logo.png";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useTranslation } from "react-i18next";
 export default function BookingPaymentScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-
+  const { t, i18n } = useTranslation();
   // Параметры, переданные с предыдущего экрана
   const {
     busId,
@@ -130,21 +130,21 @@ export default function BookingPaymentScreen() {
   // Рендер экрана «Сводка»
   const renderSummary = () => (
     <View style={styles.summarySection}>
-      <Text style={styles.sectionTitle}>Сводка бронирования</Text>
+      <Text style={styles.sectionTitle}>{t("bookingPaymentScreen.bookingSummary")}</Text>
       <View style={styles.card}>
         <View style={styles.row}>
-          <Text style={styles.label}>Автобус:</Text>
+          <Text style={styles.label}>{t("bookingPaymentScreen.bus")}</Text>
           <Text style={styles.value}>{busNo}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Места:</Text>
+          <Text style={styles.label}>{t("bookingPaymentScreen.seats")}</Text>
           <Text style={styles.value}>{selectedSeats.join(", ")}</Text>
         </View>
         <View style={[styles.row, { marginTop: 20 }]}>
-          <Text style={[styles.label, styles.totalLabel]}>Итого:</Text>
+          <Text style={[styles.label, styles.totalLabel]}>{t("bookingPaymentScreen.total")}</Text>
           <Text style={styles.totalValue}>{totalAmount} KZT</Text>
         </View>
-        <Text style={styles.perSeat}>Цена за место: {price} KZT</Text>
+        <Text style={styles.perSeat}>{t("bookingPaymentScreen.perSeat")} {price} KZT</Text>
       </View>
 
       <TouchableOpacity
@@ -155,7 +155,7 @@ export default function BookingPaymentScreen() {
         {loadingPayment ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.continueBtnText}>Перейти к оплате</Text>
+          <Text style={styles.continueBtnText}>{t("bookingPaymentScreen.proceedToPayment")}</Text>
         )}
       </TouchableOpacity>
     </View>
@@ -164,9 +164,9 @@ export default function BookingPaymentScreen() {
   // Рендер экрана «Оплата»
   const renderPayment = () => (
     <View style={styles.paymentSection}>
-      <Text style={styles.sectionTitle}>Оплата</Text>
+      <Text style={styles.sectionTitle}>{t("bookingPaymentScreen.payment")}</Text>
       <View style={styles.paymentCard}>
-        <Text style={styles.paymentLabel}>К оплате:</Text>
+        <Text style={styles.paymentLabel}>{t("bookingPaymentScreen.paymentAmount")}</Text>
         <Text style={styles.paymentAmount}>{totalAmount} KZT</Text>
         <Text style={styles.paymentNote}>
           Завершите оплату через Stripe Checkout.
@@ -185,7 +185,7 @@ export default function BookingPaymentScreen() {
       )}
 
       <TouchableOpacity style={styles.goBackBtn} onPress={() => setStep("SUMMARY")}>
-        <Text style={styles.goBackBtnText}>← Назад к сводке</Text>
+        <Text style={styles.goBackBtnText}>{t("bookingPaymentScreen.goBack")}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -236,10 +236,23 @@ export default function BookingPaymentScreen() {
             >
               <Text style={{ fontSize: 18, color: "red" }}>❌ Закрыть</Text>
             </TouchableOpacity>
+            <View style={{ marginTop: 20 }}>
+                        <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>🌐 Тіл / Язык</Text>
+                        <TouchableOpacity onPress={() => i18n.changeLanguage('kk')}>
+                          <Text style={{ fontSize: 16 }}>Қазақша</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => i18n.changeLanguage('ru')}>
+                          <Text style={{ fontSize: 16 }}>Русский</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => i18n.changeLanguage('en')}>
+                          <Text style={{ fontSize: 16 }}>English</Text>
+                        </TouchableOpacity>
+                      </View>
           </View>
+         
         </Modal>
 
-        <Text style={styles.screenTitle}>Бронирование и оплата</Text>
+        <Text style={styles.screenTitle}>{t("bookingPaymentScreen.title")}</Text>
         {step === "SUMMARY" ? renderSummary() : renderPayment()}
       </SafeAreaView>
     </ScrollView>

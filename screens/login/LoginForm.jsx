@@ -9,12 +9,15 @@ import {
 import { axiosInst } from '../../service/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from 'react-i18next';
+import { t } from "i18next";
 
 
 const LoginForm = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { t, i18n } = useTranslation();
 
   const handleLogin = async () => {
       try {
@@ -34,7 +37,7 @@ const LoginForm = () => {
   return (
     <View style={styles.formContainer}>
       <View style={styles.formHeader}>
-        <Text style={styles.formTitle}>LOGIN</Text>
+        <Text style={styles.formTitle}>{t('loginScreen.title')}</Text>
       </View>
       <View style={styles.formFields}>
         <EmailField email={email} setEmail={setEmail} />
@@ -46,10 +49,11 @@ const LoginForm = () => {
 };
 
 const EmailField = ({ email, setEmail }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.inputGroup}>
       <View style={styles.labelContainer}>
-        <Text style={styles.inputLabel}>Email</Text>
+        <Text style={styles.inputLabel}>{t('loginScreen.email')}</Text>
       </View>
       <View style={styles.inputContainer}>
         <TextInput
@@ -66,10 +70,11 @@ const EmailField = ({ email, setEmail }) => {
 };
 
 const PasswordField = ({ password, setPassword }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.inputGroup}>
       <View style={styles.labelContainer}>
-        <Text style={styles.inputLabel}>Password</Text>
+        <Text style={styles.inputLabel}>{t('loginScreen.password')}</Text>
       </View>
       <View style={styles.inputContainer}>
         <TextInput
@@ -86,7 +91,7 @@ const PasswordField = ({ password, setPassword }) => {
 const LoginButton = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.loginButton} onPress={onPress}>
-      <Text style={styles.loginButtonText}>Login</Text>
+      <Text style={styles.loginButtonText}>{t('loginScreen.loginButton')}</Text>
     </TouchableOpacity>
   );
 };
