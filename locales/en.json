@@ -44,7 +44,8 @@
         "booked": "Booked",
         "selected": "Selected",
         "price": "Price",
-        "seat": "Seat"
+        "seat": "Seat",
+        "class": "Class"
     },
     "busDetailsScreen": {
         "chooseSeats": "Choose a seat",

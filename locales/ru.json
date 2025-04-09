@@ -44,7 +44,8 @@
         "booked": "Занято",
         "selected": "Выбрано",
         "price": "Цена",
-        "seat": "Место"
+        "seat": "Место",
+        "class": "Класс"
     },
     "busDetailsScreen": {
         "chooseSeats": "Выберите место",

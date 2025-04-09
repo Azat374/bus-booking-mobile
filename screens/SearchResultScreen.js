@@ -46,7 +46,7 @@ const formatTime = (time) => {
 const RouteCard = ({ bus, passengers, onBook }) => (
   <View style={[styles.routeCardContainer, bus.availableSeats > 0 ? styles.activeContainer : styles.inactiveContainer]}>
     <Text style={[styles.busId, bus.availableSeats > 0 ? styles.activeBusId : styles.inactiveBusId]}>{bus.busNo}</Text>
-
+    <Text style={[styles.busId, bus.availableSeats > 0 ? styles.activeBusId : styles.activeBusId]}>{t("searchResultScreen.class")}: {bus.busClass}</Text>
     <View style={styles.timeLocationRow}>
       <Text style={styles.timeText}>{formatTime(bus.startTime)}</Text>
       <DashedLine />
@@ -115,7 +115,6 @@ export default function BusTicketingScreen() {
       passengers,
       price: bus.cost,
       availableSeats: bus.availableSeats,
-      
     });
   };
 
